@@ -1,0 +1,16 @@
+vite.config.js
+  h_186ee0664634db 3,7-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "01640e70065e3d2fb37c33bf15f108db0d7dd832",
+  "prompts": {},
+  "humans": {
+    "h_186ee0664634db": {
+      "author": "yangdezhi.eric <yangdezhi.eric@bytedance.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
