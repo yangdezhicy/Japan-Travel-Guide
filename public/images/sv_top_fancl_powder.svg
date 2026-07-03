@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="900" viewBox="0 0 720 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">FANCL 洁颜粉</title>
+  <desc id="desc">怕闷痘和闭口的人很难绕开的洁颜粉</desc>
+  <defs>
+    <linearGradient id="bg-fancl_powder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F2F5EE" />
+      <stop offset="100%" stop-color="#F8FFF4" />
+    </linearGradient>
+  </defs>
+  <rect width="720" height="900" rx="48" fill="url(#bg-fancl_powder)" />
+  <circle cx="615" cy="120" r="120" fill="#4D7C5A" opacity="0.12" />
+  <circle cx="120" cy="775" r="160" fill="#4D7C5A" opacity="0.10" />
+  <rect x="48" y="48" width="624" height="804" rx="38" fill="white" opacity="0.74" />
+  <text x="76" y="116" fill="#4D7C5A" font-size="24" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">JAPAN MUST BUY</text>
+  <text x="76" y="194" fill="#4D7C5A" font-size="92" font-weight="700" font-family="Georgia, Noto Serif SC, serif">33</text>
+  <rect x="76" y="232" width="268" height="42" rx="21" fill="#4D7C5A" opacity="0.12" />
+  <text x="94" y="260" fill="#4D7C5A" font-size="22" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">面膜清洁 · TOP 33</text>
+  <text x="76" y="356" fill="#1C1B19" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">FANCL Washing Powder</text>
+  <text x="76" y="454" fill="#1C1B19" font-size="54" font-weight="700" font-family="Georgia, Noto Serif SC, serif">FANCL 洁颜粉</text>
+  
+  <text x="76" y="610" fill="#4B5563" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">怕闷痘和闭口的人很难绕开的洁颜粉</text>
+  <text x="76" y="690" fill="#4D7C5A" font-size="34" font-weight="700" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">¥1,980</text>
+  <text x="76" y="738" fill="#6B7280" font-size="24" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">约合 ¥83</text>
+  <text x="76" y="804" fill="#4D7C5A" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">★★★★★</text>
+  <text x="494" y="804" fill="#6B7280" font-size="20" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">AIME SHOPPING GUIDE</text>
+</svg>

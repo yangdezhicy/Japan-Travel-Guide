@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="900" viewBox="0 0 720 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Pigeon 奶瓶</title>
+  <desc id="desc">母婴攻略里常被反复提到的安心奶瓶</desc>
+  <defs>
+    <linearGradient id="bg-pigeon_bottle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EEF9F3" />
+      <stop offset="100%" stop-color="#FBFFFD" />
+    </linearGradient>
+  </defs>
+  <rect width="720" height="900" rx="48" fill="url(#bg-pigeon_bottle)" />
+  <circle cx="615" cy="120" r="120" fill="#4AA174" opacity="0.12" />
+  <circle cx="120" cy="775" r="160" fill="#4AA174" opacity="0.10" />
+  <rect x="48" y="48" width="624" height="804" rx="38" fill="white" opacity="0.74" />
+  <text x="76" y="116" fill="#4AA174" font-size="24" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">JAPAN MUST BUY</text>
+  <text x="76" y="194" fill="#4AA174" font-size="92" font-weight="700" font-family="Georgia, Noto Serif SC, serif">28</text>
+  <rect x="76" y="232" width="268" height="42" rx="21" fill="#4AA174" opacity="0.12" />
+  <text x="94" y="260" fill="#4AA174" font-size="22" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">母婴用品 · TOP 28</text>
+  <text x="76" y="356" fill="#1C1B19" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">Pigeon Baby Bottle</text>
+  <text x="76" y="454" fill="#1C1B19" font-size="54" font-weight="700" font-family="Georgia, Noto Serif SC, serif">Pigeon 奶瓶</text>
+  
+  <text x="76" y="610" fill="#4B5563" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">母婴攻略里常被反复提到的安心奶瓶</text>
+  <text x="76" y="690" fill="#4AA174" font-size="34" font-weight="700" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">¥1,500 起</text>
+  <text x="76" y="738" fill="#6B7280" font-size="24" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">约合 ¥63</text>
+  <text x="76" y="804" fill="#4AA174" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">★★★★★</text>
+  <text x="494" y="804" fill="#6B7280" font-size="20" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">AIME SHOPPING GUIDE</text>
+</svg>

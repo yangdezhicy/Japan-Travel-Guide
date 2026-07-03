@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="900" viewBox="0 0 720 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">丸久小山园抹茶</title>
+  <desc id="desc">京都宇治顶级石臼抹茶</desc>
+  <defs>
+    <linearGradient id="bg-marukyu_matcha" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EAF6EF" />
+      <stop offset="100%" stop-color="#F7FFFA" />
+    </linearGradient>
+  </defs>
+  <rect width="720" height="900" rx="48" fill="url(#bg-marukyu_matcha)" />
+  <circle cx="615" cy="120" r="120" fill="#2A6F4E" opacity="0.12" />
+  <circle cx="120" cy="775" r="160" fill="#2A6F4E" opacity="0.10" />
+  <rect x="48" y="48" width="624" height="804" rx="38" fill="white" opacity="0.74" />
+  <text x="76" y="116" fill="#2A6F4E" font-size="24" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">JAPAN MUST BUY</text>
+  <text x="76" y="194" fill="#2A6F4E" font-size="92" font-weight="700" font-family="Georgia, Noto Serif SC, serif">22</text>
+  <rect x="76" y="232" width="268" height="42" rx="21" fill="#2A6F4E" opacity="0.12" />
+  <text x="94" y="260" fill="#2A6F4E" font-size="22" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">酒水茶饮 · TOP 22</text>
+  <text x="76" y="356" fill="#1C1B19" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">Marukyu Koyamaen Matcha</text>
+  <text x="76" y="454" fill="#1C1B19" font-size="54" font-weight="700" font-family="Georgia, Noto Serif SC, serif">丸久小山园抹茶</text>
+  
+  <text x="76" y="610" fill="#4B5563" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">京都宇治顶级石臼抹茶</text>
+  <text x="76" y="690" fill="#2A6F4E" font-size="34" font-weight="700" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">¥1,600 起 · 罐装</text>
+  <text x="76" y="738" fill="#6B7280" font-size="24" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">约合 ¥67</text>
+  <text x="76" y="804" fill="#2A6F4E" font-size="28" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">★★★★★</text>
+  <text x="494" y="804" fill="#6B7280" font-size="20" font-family="Arial, PingFang SC, Noto Sans SC, sans-serif">AIME SHOPPING GUIDE</text>
+</svg>
