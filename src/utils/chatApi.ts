@@ -4,10 +4,10 @@ export interface WireMessage {
   content: string
 }
 
-/* 已部署的 AI 后端服务地址（内置默认值）。
- * 这样只需部署 react-app 即可使用 AI 助手，无需再单独配置 .env 或重新部署后端。
+/* 默认 AI 后端服务地址。
+ * 当前默认指向用户自有服务器：115.159.221.212:1217。
  * 如需切换后端，可在构建时通过 VITE_API_BASE_URL 覆盖。 */
-const DEFAULT_API_BASE = 'https://5yzc69vp.cn-east-fn.bytedance.net'
+const DEFAULT_API_BASE = 'http://115.159.221.212:1217'
 
 const API_BASE = ((import.meta.env.VITE_API_BASE_URL as string | undefined) || DEFAULT_API_BASE).replace(/\/$/, '')
 
