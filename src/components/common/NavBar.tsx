@@ -75,7 +75,7 @@ export default function NavBar() {
     navigate(`/?section=${sectionId}`)
   }
 
-  const linkActiveClass = 'text-terracotta font-bold'
+  const linkActiveClass = 'nav-active text-white font-black'
   const linkIdleClass = ''
 
   return (
@@ -177,14 +177,14 @@ export default function NavBar() {
             <div className="mt-4 space-y-2.5">
               <Link
                 to="/shopping"
-                className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isShopping ? 'bg-terracotta text-white border-terracotta' : 'bg-card text-ink/80 border-black/8'}`}
+                className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isShopping ? 'bg-ink text-white border-ink shadow-md' : 'bg-card text-ink/80 border-black/8'}`}
               >
                 <span className="flex items-center gap-2"><span className="material-symbols-outlined">shopping_bag</span>购物指南</span>
                 <span className="material-symbols-outlined text-[18px]">chevron_right</span>
               </Link>
               <Link
                 to="/favorites"
-                className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isFavorites ? 'bg-terracotta text-white border-terracotta' : 'bg-card text-ink/80 border-black/8'}`}
+                className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isFavorites ? 'bg-ink text-white border-ink shadow-md' : 'bg-card text-ink/80 border-black/8'}`}
               >
                 <span className="flex items-center gap-2"><span className="material-symbols-outlined">favorite</span>我的收藏</span>
                 <span className="material-symbols-outlined text-[18px]">chevron_right</span>
