@@ -518,3 +518,126 @@ details.info-acc[open] .acc-icon {
     height: 144px;
   }
 }
+
+/* Automated responsive polish: stronger tap targets, mobile rhythm and premium utility cards */
+button,
+a,
+summary,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+summary {
+  touch-action: manipulation;
+}
+
+.tool-card {
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 52px -28px rgba(28, 27, 25, 0.22);
+  border-color: rgba(35, 78, 67, 0.18);
+}
+
+@media (max-width: 640px) {
+  section {
+    scroll-margin-top: 72px;
+  }
+
+  .eyebrow,
+  .eyebrow-light {
+    letter-spacing: 0.2em;
+  }
+
+  .section-rule,
+  .section-rule-light,
+  .rule,
+  .rule-light {
+    width: 44px;
+  }
+
+  .spot-card,
+  .sv-card,
+  .event-card,
+  .fav-stat-card,
+  .tool-card {
+    border-radius: 1.25rem;
+  }
+
+  .info-acc summary {
+    padding: 1rem 1.125rem;
+    min-height: 56px;
+  }
+
+  .info-acc summary + div {
+    padding-left: 1.125rem;
+    padding-right: 1.125rem;
+  }
+
+  #mobile-menu a,
+  #mobile-menu button {
+    min-height: 52px;
+  }
+}
+
+/* Follow-up from automated desktop/mobile scan: enlarge hidden/line-like click targets */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.hero-dot {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+}
+
+.hero-dot::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: all 0.35s ease;
+}
+
+.hero-dot.active {
+  width: 48px;
+  background: transparent;
+}
+
+.hero-dot.active::after {
+  width: 46px;
+  background: #fff;
+}
+
+footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+#nav button {
+  min-height: 44px;
+}
+
+.nav-link {
+  min-width: 44px;
+  justify-content: center;
+}
+
+.hero-dot,
+.hero-dot.active {
+  min-width: 44px;
+  min-height: 44px;
+}

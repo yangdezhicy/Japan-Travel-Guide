@@ -6,6 +6,7 @@ const quickLinks = [
   { id: 'food', label: '美食推荐' },
   { id: 'videos', label: '旅行影像' },
   { id: 'events', label: '节日祭典' },
+  { id: 'tools', label: '旅行工具' },
   { id: 'practical', label: '实用信息' },
   { id: 'foreign', label: '安心出行' },
 ]

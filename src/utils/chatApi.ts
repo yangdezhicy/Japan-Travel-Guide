@@ -5,7 +5,7 @@ export interface WireMessage {
 }
 
 /* 默认 AI 后端服务地址。
- * 当前默认指向用户自有服务器：115.159.221.212:15320。
+ * 当前默认指向用户自有服务器：115.159.221.212:15325。
  * 如需切换后端，可在构建时通过 VITE_API_BASE_URL 覆盖。 */
 const DEFAULT_API_BASE = window.location.protocol === 'https:'
   ? 'https://115.159.221.212:15325'

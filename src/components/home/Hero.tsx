@@ -32,8 +32,8 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative h-screen w-full overflow-hidden"
-      style={{ minHeight: 680 }}
+      className="relative min-h-[100svh] w-full overflow-hidden"
+      style={{ minHeight: 'max(620px, 100svh)' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -55,10 +55,14 @@ export default function Hero() {
           <span className="rule-light" />
           <span className="eyebrow-light hero-text-anim">{slide.eyebrow}</span>
         </div>
-        <h1
-          className="mt-6 text-white font-black serif leading-[1.05] text-4xl sm:text-5xl md:text-7xl lg:text-8xl max-w-4xl hero-text-anim"
-          dangerouslySetInnerHTML={{ __html: slide.title }}
-        />
+        <h1 className="mt-6 text-white font-black serif leading-[1.05] text-4xl sm:text-5xl md:text-7xl lg:text-8xl max-w-4xl hero-text-anim">
+          {slide.title.split(/<br\s*\/?>/i).map((part, index) => (
+            <span key={`${slide.eyebrow}-${part}`}>
+              {index > 0 ? <br /> : null}
+              {part}
+            </span>
+          ))}
+        </h1>
         <div className="mt-7 flex items-center gap-3">
           <span className="rule-light hidden sm:inline-block" />
           <span className="text-white/85 tracking-[.28em] uppercase text-[10px] sm:text-[11px] font-semibold hero-text-anim">

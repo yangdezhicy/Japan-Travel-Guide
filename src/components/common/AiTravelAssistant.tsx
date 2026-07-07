@@ -439,7 +439,7 @@ export default function AiTravelAssistant() {
           <p className="text-[12px] font-bold text-ink mb-2">可以这样问我</p>
           <div className="space-y-1.5">
             {latestTips.map((item) => (
-              <button key={item.id} type="button" onClick={() => ask(item.title)} className="block w-full text-left text-[12px] text-ink/65 hover:text-pine truncate">
+              <button key={item.id} type="button" onClick={() => ask(item.title)} className="block w-full min-h-[40px] text-left text-[12px] text-ink/65 hover:text-pine truncate">
                 {item.title}
               </button>
             ))}

@@ -9,6 +9,7 @@ const sectionLinks = [
   { id: 'food', label: '美食' },
   { id: 'videos', label: '旅行影像' },
   { id: 'events', label: '节日祭典' },
+  { id: 'tools', label: '旅行工具' },
   { id: 'practical', label: '实用信息' },
   { id: 'foreign', label: '安心出行' },
 ]
@@ -136,47 +137,61 @@ export default function NavBar() {
           </div>
         </div>
 
-        {/* Mobile Menu Backdrop */}
-        <div 
-          className={`lg:hidden fixed inset-0 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
-          style={{ top: 64, zIndex: -1 }}
+        {/* Mobile Drawer */}
+        <div
+          className={`lg:hidden fixed inset-0 bg-ink/45 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          style={{ top: 64 }}
           onClick={() => setOpen(false)}
         />
 
-        <div id="mobile-menu" className={`lg:hidden border-t hairline bg-paper/95 backdrop-blur transition-all duration-300 origin-top ${open ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-95 pointer-events-none'}`}>
-          <div className="px-6 py-4 flex flex-col max-h-[calc(100vh-64px)] overflow-y-auto scrollbar-hide">
-            {sectionLinks.map((link) => {
-              const active = isHome && activeSection === link.id
-              return (
-                <button
-                  key={link.id}
-                  type="button"
-                  onClick={() => goSection(link.id)}
-                  className={`mobile-link py-4 text-left font-medium border-b hairline flex items-center justify-between ${
-                    active ? linkActiveClass : 'text-ink/80'
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  {active && <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />}
-                </button>
-              )
-            })}
-            <Link
-              to="/shopping"
-              className={`mobile-link py-4 border-b hairline flex items-center justify-between ${isShopping ? linkActiveClass : 'text-ink/80 font-medium'}`}
-            >
-              <span>购物指南</span>
-              {isShopping && <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />}
-            </Link>
-            <Link
-              to="/favorites"
-              className={`mobile-link py-4 flex items-center justify-between ${isFavorites ? linkActiveClass : 'text-ink/80 font-medium'}`}
-            >
-              <span>我的收藏</span>
-              {isFavorites && <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />}
-            </Link>
+        <aside
+          id="mobile-menu"
+          className={`lg:hidden fixed right-0 w-[min(88vw,360px)] bg-paper shadow-2xl border-l hairline transition-transform duration-300 ease-out ${open ? 'translate-x-0' : 'translate-x-full pointer-events-none'}`}
+          style={{ top: 64, height: 'calc(100dvh - 64px)' }}
+          aria-hidden={!open}
+        >
+          <div className="h-full overflow-y-auto px-5 py-5 scrollbar-hide">
+            <div className="rounded-3xl bg-ink text-white p-5 mb-4">
+              <p className="text-[11px] tracking-[.22em] uppercase text-white/50">Quick Navigation</p>
+              <p className="serif text-xl font-black mt-1">选择你想看的攻略</p>
+              <p className="text-white/62 text-[12.5px] leading-6 mt-2">景点、美食、工具、购物和收藏都可以快速跳转。</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2.5">
+              {sectionLinks.map((link) => {
+                const active = isHome && activeSection === link.id
+                return (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => goSection(link.id)}
+                    className={`min-h-[52px] rounded-2xl px-3 text-left font-semibold border transition ${
+                      active ? 'bg-pine text-white border-pine shadow-md' : 'bg-card text-ink/78 border-black/8 active:scale-[.98]'
+                    }`}
+                  >
+                    <span className="block text-[13px]">{link.label}</span>
+                    {active ? <span className="mt-1 block w-6 h-0.5 rounded-full bg-terracotta" /> : null}
+                  </button>
+                )
+              })}
+            </div>
+            <div className="mt-4 space-y-2.5">
+              <Link
+                to="/shopping"
+                className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isShopping ? 'bg-terracotta text-white border-terracotta' : 'bg-card text-ink/80 border-black/8'}`}
+              >
+                <span className="flex items-center gap-2"><span className="material-symbols-outlined">shopping_bag</span>购物指南</span>
+                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+              </Link>
+              <Link
+                to="/favorites"
+                className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isFavorites ? 'bg-terracotta text-white border-terracotta' : 'bg-card text-ink/80 border-black/8'}`}
+              >
+                <span className="flex items-center gap-2"><span className="material-symbols-outlined">favorite</span>我的收藏</span>
+                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+              </Link>
+            </div>
           </div>
-        </div>
+        </aside>
       </nav>
     </header>
   )

@@ -506,7 +506,7 @@ export function buildKnowledgeContext(rawQuery: string, ctx: AssistantContext): 
   const intent = detectIntent(text)
   const sections: string[] = []
 
-  sections.push('【网站结构】首页含：七大目的地景点、各地美食榜单、旅行影像、四季物语、当地活动；另有「我的收藏」页与「购物指南」页（必买 Top 78 榜单、27 个分类、真实商品图与价格、购物商圈地图）。')
+  sections.push('【网站结构】首页含：七大目的地景点、各地美食榜单、旅行影像、四季物语、当地活动、旅行工具箱(JR Pass盈亏试算/汇率退税/VJW清单/天气穿衣/日语求助卡)；另有「我的收藏」页与「购物指南」页（必买 Top 78 榜单、27 个分类、真实商品图与价格、购物商圈地图）。')
 
   const budgetLabel: Record<BudgetLevel, string> = { low: '经济省钱', mid: '舒适适中', high: '品质高端' }
   const companionLabel: Record<Companion, string> = { family: '亲子(带小孩)', elder: '带长辈', couple: '情侣', friends: '结伴出游', solo: '独自旅行' }

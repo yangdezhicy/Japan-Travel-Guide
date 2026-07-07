@@ -5,7 +5,7 @@ export default function Tips() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <div className="max-w-3xl mb-12 reveal show">
             <div className="flex items-center gap-3 mb-5">
-              <span className="section-num">— 07</span>
+              <span className="section-num">— 08</span>
               <span className="eyebrow">Travel Tips · 2026</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black serif leading-tight">行前必读 · 实用信息</h2>
@@ -132,7 +132,7 @@ export default function Tips() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <div className="max-w-3xl mb-12 reveal show">
             <div className="flex items-center gap-3 mb-5">
-              <span className="section-num">— 08</span>
+              <span className="section-num">— 09</span>
               <span className="eyebrow">For Foreign Travelers</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black serif leading-tight">外国游客关注 · 安心出行</h2>

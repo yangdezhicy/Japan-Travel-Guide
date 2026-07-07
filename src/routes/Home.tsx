@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
   findEventByTitle,
@@ -24,6 +24,7 @@ import Hero from '../components/home/Hero'
 import IntroStats from '../components/home/IntroStats'
 import Seasons from '../components/home/Seasons'
 import Tips from '../components/home/Tips'
+import TravelTools from '../components/home/TravelTools'
 import Videos from '../components/home/Videos'
 
 function scrollToSection(sectionId: string): void {
@@ -50,50 +51,50 @@ export default function Home() {
   const [souvenirId, setSouvenirId] = useState<string>('')
   const [eventTitle, setEventTitle] = useState<string>('')
 
-  const closeAll = () => {
+  const closeAll = useCallback(() => {
     setIntroIndex(null)
     setSeasonKey('')
     setSpotName('')
     setFoodId('')
     setSouvenirId('')
     setEventTitle('')
-  }
+  }, [])
 
-  const openIntro = (index: number) => {
+  const openIntro = useCallback((index: number) => {
     closeAll()
     setIntroIndex(index)
-  }
+  }, [closeAll])
 
-  const openSeason = (key: SeasonKey) => {
+  const openSeason = useCallback((key: SeasonKey) => {
     closeAll()
     setSeasonKey(key)
-  }
+  }, [closeAll])
 
-  const openSpot = (name: string) => {
+  const openSpot = useCallback((name: string) => {
     const hit = findSpotByName(name)
     if (hit?.region?.id) setActiveRegionId(hit.region.id)
     closeAll()
     setSpotName(name)
-  }
+  }, [closeAll])
 
-  const openFood = (id: string) => {
+  const openFood = useCallback((id: string) => {
     const hit = findFoodById(id)
     if (hit?.region?.id) setActiveRegionId(hit.region.id)
     closeAll()
     setFoodId(id)
-  }
+  }, [closeAll])
 
-  const openSouvenir = (id: string) => {
+  const openSouvenir = useCallback((id: string) => {
     closeAll()
     setSouvenirId(id)
-  }
+  }, [closeAll])
 
-  const openEvent = (title: string) => {
+  const openEvent = useCallback((title: string) => {
     const hit = findEventByTitle(title)
     if (hit?.region?.id) setActiveRegionId(hit.region.id)
     closeAll()
     setEventTitle(title)
-  }
+  }, [closeAll])
 
   useEffect(() => {
     const search = new URLSearchParams(location.search)
@@ -111,7 +112,7 @@ export default function Home() {
     else if (food) openFood(food)
     else if (sv) openSouvenir(sv)
     else if (event) openEvent(event)
-  }, [location.search])
+  }, [location.search, openEvent, openFood, openSouvenir, openSpot])
 
   return (
     <main>
@@ -122,6 +123,7 @@ export default function Home() {
       <Food activeRegionId={activeRegionId} onOpenFood={openFood} />
       <Videos activeRegionId={activeRegionId} />
       <Events activeRegionId={activeRegionId} onChangeRegion={setActiveRegionId} onOpenEvent={openEvent} />
+      <TravelTools />
       <Tips />
       <Cta />
 
