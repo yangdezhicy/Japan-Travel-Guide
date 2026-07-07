@@ -7,7 +7,7 @@ export interface WireMessage {
 /* 默认 AI 后端服务地址。
  * 当前默认指向用户自有服务器：115.159.221.212:1217。
  * 如需切换后端，可在构建时通过 VITE_API_BASE_URL 覆盖。 */
-const DEFAULT_API_BASE = 'http://115.159.221.212:1217/tencentcloud'
+const DEFAULT_API_BASE = 'http://115.159.221.212:1217'
 
 const API_BASE = ((import.meta.env.VITE_API_BASE_URL as string | undefined) || DEFAULT_API_BASE).replace(/\/$/, '')
 
