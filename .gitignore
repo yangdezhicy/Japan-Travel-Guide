@@ -25,6 +25,7 @@ dist-ssr
 
 # Build output (deployment artifact, not source)
 dist_lean
+dist_precise
 
 # Local env (backend URL is already built-in as default)
 .env

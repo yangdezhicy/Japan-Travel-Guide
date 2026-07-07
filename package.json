@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:precise": "npm run build && node scripts/prepare-precise-dist.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "preview": "vite preview"
