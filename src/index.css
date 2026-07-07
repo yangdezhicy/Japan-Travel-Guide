@@ -29,6 +29,8 @@ body {
 
 body.modal-open {
   overflow: hidden;
+  height: 100vh; /* fallback */
+  height: 100dvh;
 }
 
 #root {
@@ -333,8 +335,8 @@ details.info-acc[open] .acc-icon {
 }
 
 .hero-arrow {
-  width: 52px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -343,6 +345,13 @@ details.info-acc[open] .acc-icon {
   background: rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(6px);
   transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+
+@media (min-width: 768px) {
+  .hero-arrow {
+    width: 52px;
+    height: 52px;
+  }
 }
 
 .hero-arrow:hover {

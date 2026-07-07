@@ -30,6 +30,15 @@ export default function NavBar() {
   }, [])
 
   useEffect(() => {
+    if (open) {
+      document.body.classList.add('modal-open')
+    } else {
+      document.body.classList.remove('modal-open')
+    }
+    return () => document.body.classList.remove('modal-open')
+  }, [open])
+
+  useEffect(() => {
     setOpen(false)
   }, [location.pathname, location.search])
 
@@ -47,10 +56,11 @@ export default function NavBar() {
   const mobileIcon = open ? 'close' : 'menu'
 
   const navClassName = useMemo(() => {
-    return `fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`
-  }, [scrolled])
+    return `fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled || open ? 'shadow-md' : ''}`
+  }, [scrolled, open])
 
   const goSection = (sectionId: string) => {
+    setOpen(false)
     if (isHome) {
       // 已经在首页：不刷 URL，直接 scroll
       if (sectionId === 'top') {
@@ -126,8 +136,15 @@ export default function NavBar() {
           </div>
         </div>
 
-        <div id="mobile-menu" className={`lg:hidden border-t hairline bg-paper/95 backdrop-blur ${open ? '' : 'hidden'}`}>
-          <div className="px-6 py-2 flex flex-col">
+        {/* Mobile Menu Backdrop */}
+        <div 
+          className={`lg:hidden fixed inset-0 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+          style={{ top: 64, zIndex: -1 }}
+          onClick={() => setOpen(false)}
+        />
+
+        <div id="mobile-menu" className={`lg:hidden border-t hairline bg-paper/95 backdrop-blur transition-all duration-300 origin-top ${open ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-95 pointer-events-none'}`}>
+          <div className="px-6 py-4 flex flex-col max-h-[calc(100vh-64px)] overflow-y-auto scrollbar-hide">
             {sectionLinks.map((link) => {
               const active = isHome && activeSection === link.id
               return (
@@ -135,25 +152,28 @@ export default function NavBar() {
                   key={link.id}
                   type="button"
                   onClick={() => goSection(link.id)}
-                  className={`mobile-link py-3 text-left font-medium border-b hairline ${
+                  className={`mobile-link py-4 text-left font-medium border-b hairline flex items-center justify-between ${
                     active ? linkActiveClass : 'text-ink/80'
                   }`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {active && <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />}
                 </button>
               )
             })}
             <Link
               to="/shopping"
-              className={`mobile-link py-3 border-b hairline ${isShopping ? linkActiveClass : 'text-ink/80 font-medium'}`}
+              className={`mobile-link py-4 border-b hairline flex items-center justify-between ${isShopping ? linkActiveClass : 'text-ink/80 font-medium'}`}
             >
-              购物指南
+              <span>购物指南</span>
+              {isShopping && <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />}
             </Link>
             <Link
               to="/favorites"
-              className={`mobile-link py-3 ${isFavorites ? linkActiveClass : 'text-ink/80 font-medium'}`}
+              className={`mobile-link py-4 flex items-center justify-between ${isFavorites ? linkActiveClass : 'text-ink/80 font-medium'}`}
             >
-              我的收藏
+              <span>我的收藏</span>
+              {isFavorites && <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />}
             </Link>
           </div>
         </div>

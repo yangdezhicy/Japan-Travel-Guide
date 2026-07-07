@@ -252,10 +252,10 @@ export default function AiTravelAssistant() {
   }
 
   return (
-    <div className="fixed right-4 bottom-4 md:right-6 md:bottom-6" style={{ zIndex: 90 }}>
+    <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90 }}>
       {open ? (
-        <section className="w-full max-w-md rounded-3xl bg-paper shadow-2xl border hairline overflow-hidden" style={{ width: 'calc(100vw - 32px)' }}>
-          <div className="text-white p-5 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #23241f 0%, #2f3a30 55%, #3d5142 100%)' }}>
+        <section className="w-full h-full md:h-auto md:max-w-md md:rounded-3xl bg-paper shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
+          <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #23241f 0%, #2f3a30 55%, #3d5142 100%)' }}>
             <div className="flex items-start gap-3">
               <span className="shrink-0 w-11 h-11 rounded-2xl bg-white/12 grid place-items-center border border-white/15">
                 <span className="material-symbols-outlined text-[24px]">smart_toy</span>
@@ -265,7 +265,7 @@ export default function AiTravelAssistant() {
                 <h3 className="serif font-black text-xl mt-0.5">日本旅游 AI 小助手</h3>
                 <p className="text-white/70 text-[12px] mt-1 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  大模型驱动 · 流式回答 · 站内真实数据
+                  大模型驱动 · 站内真实数据
                 </p>
               </div>
             </div>
@@ -279,7 +279,8 @@ export default function AiTravelAssistant() {
             </div>
           </div>
 
-          <div ref={scrollRef} className="p-4 overflow-y-auto space-y-4" style={{ maxHeight: '54vh', background: 'linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%)' }}>
+          <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-4" style={{ background: 'linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%)' }}>
+            <div className="md:hidden h-2" /> {/* Mobile top padding */}
             {messages.map((message) => (
               <div key={message.id} className={message.role === 'user' ? 'text-right' : 'text-left'}>
                 <div className={`inline-block max-w-[92%] rounded-2xl px-4 py-3 text-[13px] leading-6 text-left shadow-sm ${message.role === 'user' ? 'bg-pine text-white rounded-br-md' : 'bg-white text-ink/80 border hairline rounded-bl-md'}`}>
@@ -392,31 +393,34 @@ export default function AiTravelAssistant() {
             ) : null}
           </div>
 
-          <div className="px-4 pb-3 flex flex-wrap gap-2">
-            {AI_QUICK_QUESTIONS.slice(0, 3).map((item) => (
-              <button key={item} type="button" onClick={() => ask(item)} className="text-[11.5px] px-3 py-1.5 rounded-full bg-ink/6 text-ink/70 hover:bg-ink hover:text-white transition">
-                {item}
-              </button>
-            ))}
-          </div>
+          <div className="shrink-0">
+            <div className="px-4 pb-3 flex flex-wrap gap-2 overflow-x-auto scrollbar-hide no-wrap">
+              {AI_QUICK_QUESTIONS.slice(0, 4).map((item) => (
+                <button key={item} type="button" onClick={() => ask(item)} className="whitespace-nowrap text-[11.5px] px-3.5 py-2 rounded-full bg-ink/6 text-ink/70 hover:bg-ink hover:text-white transition border hairline">
+                  {item}
+                </button>
+              ))}
+            </div>
 
-          <form
-            className="p-4 pt-0 flex gap-2"
-            onSubmit={(event) => {
-              event.preventDefault()
-              ask(query)
-            }}
-          >
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="问我：带娃去东京怎么玩？"
-              className="flex-1 rounded-full bg-card border hairline px-4 py-3 text-[13px] outline-none focus:border-pine"
-            />
-            <button type="submit" className="w-11 h-11 rounded-full bg-pine text-white grid place-items-center hover:bg-terracotta transition disabled:opacity-40" aria-label="发送问题" disabled={typing}>
-              <span className="material-symbols-outlined">send</span>
-            </button>
-          </form>
+            <form
+              className="p-4 pt-0 flex gap-2"
+              onSubmit={(event) => {
+                event.preventDefault()
+                ask(query)
+              }}
+            >
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="问我：带娃去东京怎么玩？"
+                className="flex-1 rounded-full bg-card border hairline px-5 py-3 text-[14px] outline-none focus:border-pine shadow-sm"
+              />
+              <button type="submit" className="w-12 h-11 rounded-full bg-pine text-white grid place-items-center hover:bg-terracotta transition disabled:opacity-40 shadow-sm" aria-label="发送问题" disabled={typing}>
+                <span className="material-symbols-outlined">send</span>
+              </button>
+            </form>
+            <div className="md:hidden h-2" /> {/* Safe area / Keyboard padding */}
+          </div>
         </section>
       ) : (
         <button type="button" onClick={() => setOpen(true)} className="group rounded-full bg-ink text-white shadow-2xl border border-white/10 pl-4 pr-5 py-3 flex items-center gap-3 hover:bg-pine transition">

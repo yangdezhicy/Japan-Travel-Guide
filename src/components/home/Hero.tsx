@@ -56,23 +56,23 @@ export default function Hero() {
           <span className="eyebrow-light hero-text-anim">{slide.eyebrow}</span>
         </div>
         <h1
-          className="mt-6 text-white font-black serif leading-[1.05] text-5xl md:text-7xl lg:text-8xl max-w-4xl hero-text-anim"
+          className="mt-6 text-white font-black serif leading-[1.05] text-4xl sm:text-5xl md:text-7xl lg:text-8xl max-w-4xl hero-text-anim"
           dangerouslySetInnerHTML={{ __html: slide.title }}
         />
         <div className="mt-7 flex items-center gap-3">
-          <span className="rule-light" />
-          <span className="text-white/85 tracking-[.28em] uppercase text-[11px] font-semibold hero-text-anim">
+          <span className="rule-light hidden sm:inline-block" />
+          <span className="text-white/85 tracking-[.28em] uppercase text-[10px] sm:text-[11px] font-semibold hero-text-anim">
             {slide.tag}
           </span>
         </div>
-        <p className="mt-6 max-w-2xl text-white/85 text-[15px] md:text-lg leading-loose hero-text-anim">
+        <p className="mt-6 max-w-2xl text-white/85 text-[14px] sm:text-[15px] md:text-lg leading-loose hero-text-anim">
           {slide.sub}
         </p>
-        <div className="mt-10 flex flex-wrap gap-4">
+        <div className="mt-10 flex flex-col sm:flex-row flex-wrap gap-4">
           <button
             type="button"
             onClick={() => goSection('destinations')}
-            className="btn-primary font-semibold px-8 py-4 rounded-full flex items-center gap-2 shadow-lg"
+            className="btn-primary font-semibold px-8 py-4 rounded-full flex items-center justify-center gap-2 shadow-lg text-[14px] sm:text-base"
           >
             <span className="material-symbols-outlined text-[20px]">map</span>
             探索目的地
@@ -80,7 +80,7 @@ export default function Hero() {
           <button
             type="button"
             onClick={() => navigate('/shopping')}
-            className="btn-outline font-semibold px-8 py-4 rounded-full flex items-center gap-2"
+            className="btn-outline font-semibold px-8 py-4 rounded-full flex items-center justify-center gap-2 text-[14px] sm:text-base"
           >
             <span className="material-symbols-outlined text-[20px]">redeem</span>
             购物指南

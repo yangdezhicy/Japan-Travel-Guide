@@ -23,7 +23,7 @@ export default function SectionHeader({
         <span className="section-num">— {index}</span>
         <span className="eyebrow">{eyebrow}</span>
       </div>
-      <h2 className="text-4xl md:text-5xl font-black serif leading-tight">{title}</h2>
+      <h2 className="text-3xl md:text-5xl font-black serif leading-tight">{title}</h2>
       <div className="section-rule mt-6 mb-5" />
       {desc ? <p className="text-ink/65 leading-8 text-[15px]">{desc}</p> : null}
     </div>

@@ -53,14 +53,14 @@ export default function Modal({
       <div className="absolute inset-0 bg-ink/60 backdrop-blur-sm" onClick={onClose} />
       <div
         ref={scrollRef}
-        className={`relative h-full w-full flex items-start justify-center overflow-y-auto p-0 md:p-6`}
+        className={`relative h-full w-full flex items-start md:items-start justify-center overflow-y-auto p-0 md:p-6`}
       >
-        <div className={`modal-surface relative bg-paper w-full ${maxWidth} md:rounded-3xl shadow-2xl my-0 md:my-8 border hairline ${innerClassName}`} style={{ maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}>
+        <div className={`modal-surface relative bg-paper w-full ${maxWidth} md:rounded-3xl shadow-2xl my-0 md:my-8 border hairline min-h-screen md:min-h-0 ${innerClassName}`} style={{ overflowY: 'visible' }}>
           {/* 关闭按钮 */}
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full glass grid place-items-center text-ink hover:bg-white transition"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full glass grid place-items-center text-ink hover:bg-white transition shadow-sm border hairline"
             style={{ zIndex: 10, position: 'sticky', top: 16, marginLeft: 'auto', float: 'right' }}
             aria-label="关闭"
           >
