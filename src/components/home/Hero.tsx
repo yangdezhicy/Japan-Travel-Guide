@@ -33,7 +33,7 @@ export default function Hero() {
     <section
       id="top"
       className="relative min-h-[100svh] w-full overflow-hidden"
-      style={{ minHeight: 'max(620px, 100svh)' }}
+      style={{ minHeight: 'max(680px, 100svh)' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -50,7 +50,7 @@ export default function Hero() {
         <div className="seal text-white/95 text-xl border border-white/40 px-3 py-6 rounded-sm">四 季 日 本</div>
       </div>
 
-      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 md:px-10 flex flex-col justify-center">
+      <div className="relative z-10 min-h-[inherit] max-w-7xl mx-auto px-6 md:px-10 flex flex-col justify-center pt-28 pb-28 sm:pt-32 md:pt-36 md:pb-24">
         <div className="flex items-center gap-3">
           <span className="rule-light" />
           <span className="eyebrow-light hero-text-anim">{slide.eyebrow}</span>
