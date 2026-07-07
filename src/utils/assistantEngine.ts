@@ -545,6 +545,8 @@ export function buildKnowledgeContext(rawQuery: string, ctx: AssistantContext): 
     sections.push('【七大目的地】' + REGIONS.map((r) => `${r.name}:${r.spots.slice(0, 4).map((s) => s.name).join('、')}`).join('；'))
   }
 
+  sections.push('【购物趋势·日本价差重点】用户如果问“日本便宜国内贵/小红书热门/奢侈品包包”，优先推荐：LV Neverfull/Speedy、Chanel 中古 CF/19/22、Goyard St. Louis/Anjou、Celine Triomphe、Loewe Puzzle/Flamenco、Mikimoto/TASAKI 珍珠、BAO BAO、PORTER、Onitsuka Tiger、Lululemon Outlet。务必提醒奢侈品差价会受实时公价、汇率、退税、库存影响，不能编造精确折扣。')
+
   const shoppingIntents: Intent[] = ['shopping', 'drugstore', 'electronics', 'luxury']
   const sortedByRating = SOUVENIRS.slice().sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
   let sv: Souvenir[]

@@ -46,7 +46,7 @@ export function SouvenirCard({ item, onOpen, rank, featured = false }: SouvenirC
   return (
     <article
       onClick={() => onOpen(item.id)}
-      className="sv-card group bg-card rounded-2xl border hairline overflow-hidden cursor-pointer flex flex-col"
+      className="sv-card trend-card group bg-card rounded-[28px] border hairline overflow-hidden cursor-pointer flex flex-col"
     >
       <div className="relative overflow-hidden bg-paper" style={{ height: featured ? 220 : 184 }}>
         <ZoomImg

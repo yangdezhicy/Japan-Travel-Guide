@@ -101,16 +101,16 @@ export default function Shopping() {
         <ZoomImg src="/images/tokyo_shibuya.jpg" alt="日本购物指南" className="absolute inset-0 w-full h-full object-cover" disabled />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/55 to-ink/85" />
         <div className="relative max-w-6xl mx-auto px-6 md:px-10 py-20 md:py-24">
-          <span className="eyebrow-light">Shopping Guide · 2026</span>
-          <h1 className="text-white text-4xl md:text-6xl font-black serif mt-4 leading-tight">
-            日本购物指南
+          <span className="eyebrow-light">Trend Shopping · Japan Price Gap</span>
+          <h1 className="text-white text-[clamp(2.8rem,8vw,6rem)] font-black serif mt-4 leading-[.94] tracking-[-.06em]">
+            日本购物
             <br />
-            Top 50 Must Buy
+            热门价差清单
           </h1>
           <div className="section-rule-light mt-6 mb-6" />
           <p className="text-white/88 max-w-3xl leading-8 text-[15px]">
-            这次把榜单扩展成 Top 78，总榜 + 27 类分栏一起给你，覆盖 {SOUVENIRS.length} 件日本高频必买好物。
-            从药妆、美妆、零食、家电到运动休闲、服装、电子产品、奢侈品、时尚饰品都能一页看清，适合边做清单边收藏。
+            这次把榜单重排为“日本便宜、国内更贵/更难买”的热门价差逻辑：奢侈品包袋、中古精品、日系珠宝、潮鞋、美容仪和药妆都放到前排。
+            覆盖 {SOUVENIRS.length} 件日本高频好物，适合边比价边收藏；所有价格以门店实时标价、退税规则和汇率为准。
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 max-w-4xl">
             {[
