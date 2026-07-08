@@ -99,8 +99,8 @@ export default function Shopping() {
     <main className="pt-16 bg-paper min-h-screen">
       <section className="relative overflow-hidden" style={{ minHeight: 380 }}>
         <ZoomImg src="/images/tokyo_shibuya.jpg" alt="日本购物指南" className="absolute inset-0 w-full h-full object-cover" disabled />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/55 to-ink/85" />
-        <div className="relative max-w-6xl mx-auto px-6 md:px-10 py-20 md:py-24">
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/94 via-ink/90 to-ink/98" />
+        <div className="relative max-w-6xl mx-auto px-6 md:px-10 py-20 md:py-24 drop-shadow-[0_2px_18px_rgba(45,36,32,0.36)]">
           <span className="eyebrow-light">Trend Shopping · Japan Price Gap</span>
           <h1 className="text-white text-[clamp(2.8rem,8vw,6rem)] font-black serif mt-4 leading-[.94] tracking-[-.06em]">
             日本购物
@@ -108,7 +108,7 @@ export default function Shopping() {
             热门价差清单
           </h1>
           <div className="section-rule-light mt-6 mb-6" />
-          <p className="text-white/88 max-w-3xl leading-8 text-[15px]">
+          <p className="text-white/95 max-w-3xl leading-8 text-[15px]">
             这次把榜单重排为“日本便宜、国内更贵/更难买”的热门价差逻辑：奢侈品包袋、中古精品、日系珠宝、潮鞋、美容仪和药妆都放到前排。
             覆盖 {SOUVENIRS.length} 件日本高频好物，适合边比价边收藏；所有价格以门店实时标价、退税规则和汇率为准。
           </p>
@@ -119,13 +119,13 @@ export default function Shopping() {
               ['Top 榜单', 'Top 78'],
               ['必逛商圈', `${SHOPPING_DISTRICTS.length} 处`],
             ].map(([label, value]) => (
-              <div key={label} className="rounded-2xl border border-white/15 bg-white/8 backdrop-blur-sm p-4">
-                <p className="text-white/60 text-[11px] tracking-[.2em] uppercase">{label}</p>
+              <div key={label} className="rounded-2xl border border-white/20 bg-ink/34 backdrop-blur-md p-4 shadow-[0_16px_36px_-24px_rgba(0,0,0,0.75)]">
+                <p className="text-white/76 text-[11px] tracking-[.2em] uppercase">{label}</p>
                 <p className="text-white serif font-black text-2xl mt-2">{value}</p>
               </div>
             ))}
           </div>
-          <p className="text-white/58 text-[12.5px] mt-5">
+          <p className="text-white/78 text-[12.5px] mt-5">
             参考汇率：100 日元 ≈ 4.18 元人民币（2026-07）。页面价格为公开参考区间，实际请以门店标价、免税规则与活动为准。
           </p>
         </div>
