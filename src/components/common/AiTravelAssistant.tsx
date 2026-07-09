@@ -77,6 +77,10 @@ function loadPersisted(): PersistShape | null {
   }
 }
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === 'AbortError'
+}
+
 /* 轻量 Markdown 渲染：支持 **加粗**、# 标题、- 列表，避免引入额外依赖与 XSS 风险 */
 function renderInline(text: string): ReactNode[] {
   const counts: Record<string, number> = {}
@@ -134,6 +138,10 @@ export default function AiTravelAssistant() {
   const [query, setQuery] = useState('')
   const [typing, setTyping] = useState(false)
   const [streamId, setStreamId] = useState<string | null>(null)
+  const [showScrollHint, setShowScrollHint] = useState(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const localTimerRef = useRef<number | null>(null)
+  const isAutoScrolling = useRef(true)
   const persisted = useMemo(() => loadPersisted(), [])
   const [messages, setMessages] = useState<ChatMessage[]>(persisted?.messages ?? [WELCOME])
 
@@ -143,8 +151,28 @@ export default function AiTravelAssistant() {
 
   const latestTips = useMemo(() => TRAVEL_KNOWLEDGE_BASE.slice(0, 4), [])
 
+  const isNearBottom = () => {
+    const node = scrollRef.current
+    if (!node) return true
+    return node.scrollHeight - node.scrollTop - node.clientHeight < 96
+  }
+
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    const node = scrollRef.current
+    if (!node) return
+    window.requestAnimationFrame(() => {
+      node.scrollTo({ top: node.scrollHeight, behavior })
+    })
+  }
+
+  const handleScroll = () => {
+    const nearBottom = isNearBottom()
+    isAutoScrolling.current = nearBottom
+    setShowScrollHint(!nearBottom)
+  }
+
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    if (open && isAutoScrolling.current) scrollToBottom(typing ? 'auto' : 'smooth')
   }, [messages, typing, open])
 
   useEffect(() => {
@@ -161,6 +189,29 @@ export default function AiTravelAssistant() {
   const nextId = () => {
     idRef.current += 1
     return `m-${idRef.current}`
+  }
+
+  const stopAnswer = () => {
+    abortControllerRef.current?.abort()
+    abortControllerRef.current = null
+    if (localTimerRef.current) {
+      window.clearTimeout(localTimerRef.current)
+      localTimerRef.current = null
+    }
+    setTyping(false)
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === streamId
+          ? {
+              ...m,
+              text: m.text || '已停止回答。你可以换个问题继续问我。',
+              chips: m.chips ?? ['换个城市推荐', '重新规划 3 日游'],
+              sources: m.sources ?? ['回答已中断'],
+            }
+          : m,
+      ),
+    )
+    setStreamId(null)
   }
 
   const ask = (value: string) => {
@@ -200,6 +251,7 @@ export default function AiTravelAssistant() {
       // 先插入一个空的流式占位气泡，随后逐 token 填充
       setMessages((prev) => [...prev, { id: sid, role: 'assistant', text: '' }])
       setStreamId(sid)
+      abortControllerRef.current = new AbortController()
 
       const finalizeStream = (fullText: string) => {
         setMessages((prev) =>
@@ -217,13 +269,20 @@ export default function AiTravelAssistant() {
         )
         setStreamId(null)
         setTyping(false)
+        abortControllerRef.current = null
       }
 
-      chatWithBackendStream(wire, knowledge, (_delta, full) => {
-        setMessages((prev) => prev.map((m) => (m.id === sid ? { ...m, text: full } : m)))
-      })
+      chatWithBackendStream(
+        wire,
+        knowledge,
+        (_delta, full) => {
+          setMessages((prev) => prev.map((m) => (m.id === sid ? { ...m, text: full } : m)))
+        },
+        abortControllerRef.current.signal,
+      )
         .then((full) => finalizeStream(full))
-        .catch(() =>
+        .catch((err) => {
+          if (isAbortError(err)) return
           // 流式失败：退回一次非流式接口，仍失败则用本地兜底
           chatWithBackend(wire, knowledge)
             .then((full) => finalizeStream(full))
@@ -231,14 +290,24 @@ export default function AiTravelAssistant() {
               setMessages((prev) => prev.filter((m) => m.id !== sid))
               setStreamId(null)
               finish(localReply)
-            }),
-        )
+              abortControllerRef.current = null
+            })
+        })
     } else {
-      window.setTimeout(() => finish(localReply), 420)
+      localTimerRef.current = window.setTimeout(() => {
+        localTimerRef.current = null
+        finish(localReply)
+      }, 420)
     }
   }
 
   const clearChat = () => {
+    abortControllerRef.current?.abort()
+    abortControllerRef.current = null
+    if (localTimerRef.current) {
+      window.clearTimeout(localTimerRef.current)
+      localTimerRef.current = null
+    }
     contextRef.current = createInitialContext()
     idRef.current = 0
     setMessages([WELCOME])
@@ -254,7 +323,7 @@ export default function AiTravelAssistant() {
   return (
     <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90 }}>
       {open ? (
-        <section className="w-full h-full md:h-auto md:max-w-md md:rounded-3xl bg-paper shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
+        <section className="w-full h-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-3xl bg-paper shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
           <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #23241f 0%, #2f3a30 55%, #3d5142 100%)' }}>
             <div className="flex items-start gap-3">
               <span className="shrink-0 w-11 h-11 rounded-2xl bg-white/12 grid place-items-center border border-white/15">
@@ -279,7 +348,12 @@ export default function AiTravelAssistant() {
             </div>
           </div>
 
-          <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-4" style={{ background: 'linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%)' }}>
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex-1 min-h-0 p-4 overflow-y-auto space-y-4"
+            style={{ background: 'linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%)', scrollBehavior: 'smooth' }}
+          >
             <div className="md:hidden h-2" /> {/* Mobile top padding */}
             {messages.map((message) => (
               <div key={message.id} className={message.role === 'user' ? 'text-right' : 'text-left'}>
@@ -373,7 +447,13 @@ export default function AiTravelAssistant() {
                 {message.role === 'assistant' && message.chips?.length ? (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {message.chips.map((chip) => (
-                      <button key={`${message.id}-${chip}`} type="button" onClick={() => ask(chip)} className="text-[11.5px] px-3 py-1.5 rounded-full bg-pine/8 text-pine hover:bg-pine hover:text-white transition">
+                      <button
+                        key={`${message.id}-${chip}`}
+                        type="button"
+                        onClick={() => ask(chip)}
+                        disabled={typing}
+                        className="text-[11.5px] px-3 py-1.5 rounded-full bg-pine/8 text-pine hover:bg-pine hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-pine/8 disabled:hover:text-pine"
+                      >
                         {chip}
                       </button>
                     ))}
@@ -394,9 +474,38 @@ export default function AiTravelAssistant() {
           </div>
 
           <div className="shrink-0">
+            {showScrollHint ? (
+              <div className="px-4 pt-2 pb-1 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    isAutoScrolling.current = true
+                    setShowScrollHint(false)
+                    scrollToBottom()
+                  }}
+                  className="text-[11.5px] px-3 py-1.5 rounded-full bg-white border hairline text-pine shadow-sm hover:bg-pine hover:text-white transition"
+                >
+                  回到底部
+                </button>
+              </div>
+            ) : null}
+            {typing ? (
+              <div className="px-4 pb-2 text-[11.5px] text-ink/45 flex items-center justify-between gap-2">
+                <span>AI 正在回答，期间快捷问题已暂停</span>
+                <button type="button" onClick={stopAnswer} className="font-bold text-terracotta hover:text-pine transition">
+                  停止回答
+                </button>
+              </div>
+            ) : null}
             <div className="px-4 pb-3 flex flex-wrap gap-2 overflow-x-auto scrollbar-hide no-wrap">
               {AI_QUICK_QUESTIONS.slice(0, 4).map((item) => (
-                <button key={item} type="button" onClick={() => ask(item)} className="whitespace-nowrap text-[11.5px] px-3.5 py-2 rounded-full bg-ink/6 text-ink/70 hover:bg-ink hover:text-white transition border hairline">
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => ask(item)}
+                  disabled={typing}
+                  className="whitespace-nowrap text-[11.5px] px-3.5 py-2 rounded-full bg-ink/6 text-ink/70 hover:bg-ink hover:text-white transition border hairline disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-ink/6 disabled:hover:text-ink/70"
+                >
                   {item}
                 </button>
               ))}
@@ -406,17 +515,25 @@ export default function AiTravelAssistant() {
               className="p-4 pt-0 flex gap-2"
               onSubmit={(event) => {
                 event.preventDefault()
+                if (typing) {
+                  stopAnswer()
+                  return
+                }
                 ask(query)
               }}
             >
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="问我：带娃去东京怎么玩？"
+                placeholder={typing ? 'AI 正在回答，可先输入下一句，点击停止后再发送' : '问我：带娃去东京怎么玩？'}
                 className="flex-1 rounded-full bg-card border hairline px-5 py-3 text-[14px] outline-none focus:border-pine shadow-sm"
               />
-              <button type="submit" className="w-12 h-11 rounded-full bg-pine text-white grid place-items-center hover:bg-terracotta transition disabled:opacity-40 shadow-sm" aria-label="发送问题" disabled={typing}>
-                <span className="material-symbols-outlined">send</span>
+              <button
+                type="submit"
+                className={`w-12 h-11 rounded-full text-white grid place-items-center transition shadow-sm ${typing ? 'bg-terracotta hover:bg-pine' : 'bg-pine hover:bg-terracotta'}`}
+                aria-label={typing ? '停止回答' : '发送问题'}
+              >
+                <span className="material-symbols-outlined">{typing ? 'stop_circle' : 'send'}</span>
               </button>
             </form>
             <div className="md:hidden h-2" /> {/* Safe area / Keyboard padding */}
@@ -439,7 +556,13 @@ export default function AiTravelAssistant() {
           <p className="text-[12px] font-bold text-ink mb-2">可以这样问我</p>
           <div className="space-y-1.5">
             {latestTips.map((item) => (
-              <button key={item.id} type="button" onClick={() => ask(item.title)} className="block w-full min-h-[40px] text-left text-[12px] text-ink/65 hover:text-pine truncate">
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => ask(item.title)}
+                disabled={typing}
+                className="block w-full min-h-[40px] text-left text-[12px] text-ink/65 hover:text-pine truncate disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-ink/65"
+              >
                 {item.title}
               </button>
             ))}

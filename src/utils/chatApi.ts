@@ -40,8 +40,11 @@ export async function chatWithBackendStream(
   messages: WireMessage[],
   knowledge: string,
   onDelta: (delta: string, full: string) => void,
+  signal?: AbortSignal,
 ): Promise<string> {
   const controller = new AbortController()
+  const abortStream = () => controller.abort()
+  signal?.addEventListener('abort', abortStream, { once: true })
   const timer = window.setTimeout(() => controller.abort(), 90000)
   try {
     const res = await fetch(`${API_BASE}/api/chat/stream`, {
@@ -89,6 +92,7 @@ export async function chatWithBackendStream(
     if (!full) throw new Error(errMsg || '空响应')
     return full
   } finally {
+    signal?.removeEventListener('abort', abortStream)
     window.clearTimeout(timer)
   }
 }
