@@ -1,14 +1,14 @@
 :root {
-  --paper: #FFF8F1;
-  --card: #FFFEFB;
-  --ink: #2D2420;
-  --muted: #8A7568;
-  --pine: #6F4E37;
-  --pine-dark: #3F2E26;
-  --terracotta: #E97854;
-  --terracotta-dark: #C95D3D;
-  --sand: #F3E4D3;
-  --hairline: rgba(111, 78, 55, 0.14);
+  --paper: #F6F8FB;
+  --card: #FFFFFF;
+  --ink: #0F172A;
+  --muted: #64748B;
+  --pine: #2563EB;
+  --pine-dark: #0F172A;
+  --terracotta: #2563EB;
+  --terracotta-dark: #1D4ED8;
+  --sand: #E2E8F0;
+  --hairline: rgba(15, 23, 42, 0.10);
 }
 
 * {
@@ -22,7 +22,7 @@ html {
 body {
   margin: 0;
   font-family: Inter, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
-  background: radial-gradient(circle at top left, rgba(233, 120, 84, 0.16), transparent 30%), radial-gradient(circle at 86% 12%, rgba(255, 214, 165, 0.24), transparent 28%), var(--paper);
+  background: radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.10), transparent 30%), radial-gradient(circle at 88% 8%, rgba(14, 165, 233, 0.10), transparent 28%), var(--paper);
   color: var(--ink);
   min-width: 320px;
 }
@@ -95,11 +95,11 @@ h4,
 }
 
 .section-num {
-  font-family: 'Songti SC', 'STSong', serif;
-  font-weight: 500;
+  font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-weight: 800;
   color: var(--terracotta);
-  font-size: 14px;
-  letter-spacing: 0.3em;
+  font-size: 13px;
+  letter-spacing: 0.24em;
 }
 
 .rule,
@@ -189,9 +189,9 @@ h4,
 }
 
 .seal {
-  font-family: 'Songti SC', 'STSong', serif;
+  font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   writing-mode: vertical-rl;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.34em;
 }
 
 .scrollbar-hide {
@@ -642,7 +642,7 @@ footer a {
   border-radius: 999px;
   background: var(--pine-dark);
   color: #fff;
-  box-shadow: 0 10px 22px -14px rgba(111, 78, 55, 0.75);
+  box-shadow: 0 10px 22px -14px rgba(15, 23, 42, 0.55);
 }
 
 .nav-active::after {
@@ -655,73 +655,73 @@ footer a {
   min-height: 44px;
 }
 
-/* 2026 warm-minimal refresh */
+/* 2026 modern-minimal refresh */
 .glass {
-  background: rgba(255, 248, 241, 0.82);
-  border-color: rgba(111, 78, 55, 0.12);
-  backdrop-filter: blur(22px) saturate(1.12);
-  -webkit-backdrop-filter: blur(22px) saturate(1.12);
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(24px) saturate(1.08);
+  -webkit-backdrop-filter: blur(24px) saturate(1.08);
 }
 
 .trend-card,
 .bg-card.rounded-3xl,
 .bg-paper.rounded-2xl,
 .bg-card.rounded-2xl {
-  box-shadow: 0 22px 54px -38px rgba(111, 78, 55, 0.42);
+  box-shadow: 0 24px 60px -46px rgba(15, 23, 42, 0.38);
 }
 
 .trend-card {
-  border-color: rgba(111, 78, 55, 0.10);
-  background: linear-gradient(180deg, rgba(255, 254, 251, 0.98), rgba(255, 248, 241, 0.9));
+  border-color: rgba(15, 23, 42, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94));
 }
 
 .trend-card:hover {
-  transform: translateY(-5px) scale(1.006);
-  box-shadow: 0 34px 72px -42px rgba(111, 78, 55, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 34px 76px -48px rgba(15, 23, 42, 0.48);
 }
 
 .tag-pill {
-  border: 1px solid rgba(233, 120, 84, 0.18);
-  background: rgba(255, 239, 226, 0.86);
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  background: rgba(239, 246, 255, 0.92);
   backdrop-filter: blur(12px);
-  color: #6F4E37;
+  color: #1D4ED8;
   font-weight: 800;
 }
 
 .nav-active {
-  background: linear-gradient(135deg, #8A5A44, #E97854);
+  background: linear-gradient(135deg, #0F172A, #2563EB);
   color: #fff;
-  box-shadow: 0 12px 24px -16px rgba(201, 93, 61, 0.85);
+  box-shadow: 0 14px 28px -18px rgba(37, 99, 235, 0.9);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #E97854, #C95D3D);
+  background: linear-gradient(135deg, #2563EB, #0EA5E9);
   color: #fff;
-  border-color: rgba(201, 93, 61, 0.9);
-  box-shadow: 0 16px 30px -20px rgba(201, 93, 61, 0.78);
+  border-color: rgba(37, 99, 235, 0.9);
+  box-shadow: 0 16px 34px -22px rgba(37, 99, 235, 0.85);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #C95D3D, #8A5A44);
+  background: linear-gradient(135deg, #1D4ED8, #2563EB);
   color: #fff;
-  border-color: #C95D3D;
+  border-color: #1D4ED8;
 }
 
 .btn-outline:hover {
-  background: #FFF3E8;
+  background: #EFF6FF;
   color: var(--ink);
 }
 
 .btn-ghost:hover {
-  background: #FFF3E8;
+  background: #EFF6FF;
 }
 
 .section-num,
 .eyebrow {
-  color: #8A5A44;
+  color: #2563EB;
 }
 
 .section-rule,
 .rule {
-  background: linear-gradient(90deg, #E97854, #F2B880);
+  background: linear-gradient(90deg, #2563EB, #0EA5E9);
 }
