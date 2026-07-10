@@ -10,7 +10,7 @@ import {
 import { backendConfigured, chatWithBackend, chatWithBackendStream, type WireMessage } from '../../utils/chatApi'
 
 /* 从大模型回答的 Markdown 中解析出「分天行程」，用于渲染结构化行程速览卡片。
- * 识别形如「### Day 1｜标题」「## 第2天：标题」等日程小标题，收集其下的要点。 */
+ * 识别形如「### 第1天｜标题」「## 第2天：标题」等日程小标题，收集其下的要点。 */
 function parseItinerary(md: string): ItineraryDay[] {
   const days: ItineraryDay[] = []
   let cur: ItineraryDay | null = null
@@ -19,7 +19,8 @@ function parseItinerary(md: string): ItineraryDay[] {
     const head = line.match(/^#{1,4}\s*(?:🗓️?\s*)?(Day\s*\d+|第\s*\d+\s*天|D\d+)\s*[｜|:：、\-—\s]+\s*(.+?)\s*$/i)
     if (head) {
       if (cur) days.push(cur)
-      cur = { day: head[1].replace(/\s+/g, ''), title: head[2].replace(/[*#]/g, '').trim(), items: [] }
+      const dayLabel = head[1].replace(/\s+/g, '').replace(/^Day(\d+)$/i, '第$1天').replace(/^D(\d+)$/i, '第$1天')
+      cur = { day: dayLabel, title: head[2].replace(/[*#]/g, '').trim(), items: [] }
       continue
     }
     if (cur) {
@@ -75,6 +76,10 @@ function loadPersisted(): PersistShape | null {
     void err
     return null
   }
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === 'AbortError'
 }
 
 /* 轻量 Markdown 渲染：支持 **加粗**、# 标题、- 列表，避免引入额外依赖与 XSS 风险 */
@@ -134,6 +139,10 @@ export default function AiTravelAssistant() {
   const [query, setQuery] = useState('')
   const [typing, setTyping] = useState(false)
   const [streamId, setStreamId] = useState<string | null>(null)
+  const [showScrollHint, setShowScrollHint] = useState(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const localTimerRef = useRef<number | null>(null)
+  const isAutoScrolling = useRef(true)
   const persisted = useMemo(() => loadPersisted(), [])
   const [messages, setMessages] = useState<ChatMessage[]>(persisted?.messages ?? [WELCOME])
 
@@ -144,8 +153,28 @@ export default function AiTravelAssistant() {
 
   const latestTips = useMemo(() => TRAVEL_KNOWLEDGE_BASE.slice(0, 4), [])
 
+  const isNearBottom = () => {
+    const node = scrollRef.current
+    if (!node) return true
+    return node.scrollHeight - node.scrollTop - node.clientHeight < 96
+  }
+
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    const node = scrollRef.current
+    if (!node) return
+    window.requestAnimationFrame(() => {
+      node.scrollTo({ top: node.scrollHeight, behavior })
+    })
+  }
+
+  const handleScroll = () => {
+    const nearBottom = isNearBottom()
+    isAutoScrolling.current = nearBottom
+    setShowScrollHint(!nearBottom)
+  }
+
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    if (open && isAutoScrolling.current) scrollToBottom(typing ? 'auto' : 'smooth')
   }, [messages, typing, open])
 
   useEffect(() => {
@@ -162,6 +191,29 @@ export default function AiTravelAssistant() {
   const nextId = () => {
     idRef.current += 1
     return `m-${idRef.current}`
+  }
+
+  const stopAnswer = () => {
+    abortControllerRef.current?.abort()
+    abortControllerRef.current = null
+    if (localTimerRef.current) {
+      window.clearTimeout(localTimerRef.current)
+      localTimerRef.current = null
+    }
+    setTyping(false)
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === streamId
+          ? {
+              ...m,
+              text: m.text || '已停止回答。你可以换个问题继续问我。',
+              chips: m.chips ?? ['换个城市推荐', '重新规划 3 日游'],
+              sources: m.sources ?? ['回答已中断'],
+            }
+          : m,
+      ),
+    )
+    setStreamId(null)
   }
 
   const ask = (value: string) => {
@@ -201,6 +253,7 @@ export default function AiTravelAssistant() {
       // 先插入一个空的流式占位气泡，随后逐 token 填充
       setMessages((prev) => [...prev, { id: sid, role: 'assistant', text: '' }])
       setStreamId(sid)
+      abortControllerRef.current = new AbortController()
 
       const finalizeStream = (fullText: string) => {
         setMessages((prev) =>
@@ -218,13 +271,20 @@ export default function AiTravelAssistant() {
         )
         setStreamId(null)
         setTyping(false)
+        abortControllerRef.current = null
       }
 
-      chatWithBackendStream(wire, knowledge, (_delta, full) => {
-        setMessages((prev) => prev.map((m) => (m.id === sid ? { ...m, text: full } : m)))
-      })
+      chatWithBackendStream(
+        wire,
+        knowledge,
+        (_delta, full) => {
+          setMessages((prev) => prev.map((m) => (m.id === sid ? { ...m, text: full } : m)))
+        },
+        abortControllerRef.current.signal,
+      )
         .then((full) => finalizeStream(full))
-        .catch(() =>
+        .catch((err) => {
+          if (isAbortError(err)) return
           // 流式失败：退回一次非流式接口，仍失败则用本地兜底
           chatWithBackend(wire, knowledge)
             .then((full) => finalizeStream(full))
@@ -232,14 +292,24 @@ export default function AiTravelAssistant() {
               setMessages((prev) => prev.filter((m) => m.id !== sid))
               setStreamId(null)
               finish(localReply)
-            }),
-        )
+              abortControllerRef.current = null
+            })
+        })
     } else {
-      window.setTimeout(() => finish(localReply), 420)
+      localTimerRef.current = window.setTimeout(() => {
+        localTimerRef.current = null
+        finish(localReply)
+      }, 420)
     }
   }
 
   const clearChat = () => {
+    abortControllerRef.current?.abort()
+    abortControllerRef.current = null
+    if (localTimerRef.current) {
+      window.clearTimeout(localTimerRef.current)
+      localTimerRef.current = null
+    }
     contextRef.current = createInitialContext()
     idRef.current = 0
     setMessages([WELCOME])
@@ -281,44 +351,53 @@ export default function AiTravelAssistant() {
     if (containAssistantScroll(event.target, deltaY)) event.preventDefault()
   }
 
+  const copyMessage = (text: string) => {
+    if (!text.trim()) return
+    void window.navigator.clipboard?.writeText(text)
+  }
+
   return (
     <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90, maxWidth: open ? '100vw' : undefined }}>
       {open ? (
         <section
-          className="ai-assistant-panel w-[100dvw] max-w-full h-[100dvh] md:w-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-[28px] bg-card shadow-2xl md:border md:hairline overflow-hidden flex flex-col"
+          className="ai-assistant-panel w-[100dvw] max-w-full h-[100dvh] md:w-full md:h-[min(82vh,760px)] md:max-w-[480px] md:rounded-[28px] bg-white shadow-2xl md:border md:hairline overflow-hidden flex flex-col"
           onWheel={handlePanelWheel}
           onTouchStart={handlePanelTouchStart}
           onTouchMove={handlePanelTouchMove}
         >
-          <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #0F1D2E 0%, #1F3A5F 58%, #D84A38 100%)' }}>
-            <div className="flex items-start gap-3">
-              <span className="shrink-0 w-11 h-11 rounded-2xl bg-white/12 grid place-items-center border border-white/15">
-                <span className="material-symbols-outlined text-[24px]">smart_toy</span>
+          <div className="shrink-0 px-4 py-3 border-b hairline bg-white/95 backdrop-blur flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="shrink-0 w-10 h-10 rounded-2xl grid place-items-center text-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #eef8f0 0%, #dff0e3 100%)' }}>
+                旅
               </span>
-              <div>
-                <p className="text-[11px] tracking-[.24em] uppercase text-white/55">Japan AI Guide</p>
-                <h3 className="serif font-black text-xl mt-0.5">日本旅游 AI 小助手</h3>
-                <p className="text-white/70 text-[12px] mt-1 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  大模型驱动 · 站内真实数据
+              <div className="min-w-0">
+                <h3 className="font-black text-[15px] text-ink truncate">日本旅行助手</h3>
+                <p className="text-ink/50 text-[12px] mt-0.5 flex items-center gap-1.5 truncate">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  可规划行程、购物、交通和带长辈路线
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-1.5">
-              <button type="button" onClick={clearChat} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center transition" aria-label="清空对话" title="清空对话">
-                <span className="material-symbols-outlined text-[20px]">refresh</span>
+              <button type="button" onClick={clearChat} className="h-8 px-3 rounded-full bg-ink/5 hover:bg-ink/10 text-[12px] text-ink/65 transition" aria-label="清空对话" title="清空对话">
+                清空
               </button>
-              <button type="button" onClick={() => setOpen(false)} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center transition" aria-label="收起 AI 小助手">
-                <span className="material-symbols-outlined">close</span>
+              <button type="button" onClick={() => setOpen(false)} className="w-8 h-8 rounded-full bg-ink/5 hover:bg-ink/10 grid place-items-center text-ink/65 transition" aria-label="收起旅行助手">
+                ×
               </button>
             </div>
           </div>
 
-          <div ref={scrollRef} className="ai-assistant-scroll flex-1 p-4 overflow-y-auto space-y-4" style={{ background: 'radial-gradient(circle at 8% 4%, rgba(216,74,56,.10), transparent 28%), linear-gradient(180deg, #FFFDF8 0%, #FAF7F0 100%)' }}>
-            <div className="md:hidden h-2" /> {/* Mobile top padding */}
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="ai-assistant-scroll flex-1 min-h-0 p-4 overflow-y-auto space-y-4"
+            style={{ background: 'radial-gradient(circle at 8% 4%, rgba(216,74,56,.10), transparent 28%), linear-gradient(180deg, #FFFDF8 0%, #FAF7F0 100%)', scrollBehavior: 'smooth' }}
+          >
+            <div className="md:hidden h-2" /> {/* 手机端顶部留白 */}
             {messages.map((message) => (
               <div key={message.id} className={message.role === 'user' ? 'text-right' : 'text-left'}>
-                <div className={`inline-block max-w-[92%] rounded-2xl px-4 py-3 text-[13px] leading-6 text-left shadow-sm ${message.role === 'user' ? 'bg-pine text-white rounded-br-md' : 'bg-white text-ink/80 border hairline rounded-bl-md'}`}>
+                <div className={`inline-block max-w-[92%] rounded-3xl px-4 py-3 text-[13px] leading-6 text-left shadow-sm ${message.role === 'user' ? 'bg-pine text-white rounded-br-lg' : 'bg-white text-ink/80 border hairline rounded-bl-lg'}`}>
                   {message.role === 'assistant' ? (
                     message.text ? (
                       <>
@@ -328,10 +407,11 @@ export default function AiTravelAssistant() {
                         ) : null}
                       </>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <span className="inline-flex items-center gap-2 text-ink/55">
+                        <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <span>正在思考，马上回答…</span>
                       </span>
                     )
                   ) : (
@@ -345,7 +425,7 @@ export default function AiTravelAssistant() {
                         {message.itinerary.map((d) => (
                           <div key={`${message.id}-${d.day}`} className="shrink-0 rounded-2xl bg-white border hairline overflow-hidden shadow-sm" style={{ width: 158 }}>
                             <div className="px-2.5 py-1.5 text-white flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, #1F3A5F 0%, #D84A38 100%)' }}>
-                              <span className="material-symbols-outlined text-[14px]">event</span>
+                              <span className="text-[13px]">🗓</span>
                               <span className="text-[11px] font-black tracking-wide">{d.day}</span>
                             </div>
                             <div className="p-2.5">
@@ -405,10 +485,27 @@ export default function AiTravelAssistant() {
                   ) : null}
                 </div>
 
+                {message.role === 'assistant' && message.text && message.id !== 'welcome' && message.id !== streamId ? (
+                  <div className="mt-2 flex items-center gap-2 text-[11.5px] text-ink/45">
+                    <button type="button" onClick={() => copyMessage(message.text)} className="px-2.5 py-1 rounded-full hover:bg-white hover:text-pine transition">
+                      复制
+                    </button>
+                    <button type="button" onClick={() => ask(`请把上面的建议换一种更清晰、更适合手机阅读的方式重新整理：${message.text.slice(0, 120)}`)} disabled={typing} className="px-2.5 py-1 rounded-full hover:bg-white hover:text-pine transition disabled:opacity-40 disabled:cursor-not-allowed">
+                      重新整理
+                    </button>
+                  </div>
+                ) : null}
+
                 {message.role === 'assistant' && message.chips?.length ? (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {message.chips.map((chip) => (
-                      <button key={`${message.id}-${chip}`} type="button" onClick={() => ask(chip)} className="text-[11.5px] px-3 py-1.5 rounded-full bg-pine/8 text-pine hover:bg-pine hover:text-white transition">
+                      <button
+                        key={`${message.id}-${chip}`}
+                        type="button"
+                        onClick={() => ask(chip)}
+                        disabled={typing}
+                        className="text-[11.5px] px-3 py-1.5 rounded-full bg-pine/8 text-pine hover:bg-pine hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-pine/8 disabled:hover:text-pine"
+                      >
                         {chip}
                       </button>
                     ))}
@@ -419,53 +516,102 @@ export default function AiTravelAssistant() {
 
             {typing && !streamId ? (
               <div className="text-left">
-                <div className="inline-flex items-center gap-1.5 rounded-2xl px-4 py-3 bg-card border hairline">
-                  <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 bg-white border hairline text-[13px] text-ink/55 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span>正在整理站内资料…</span>
                 </div>
               </div>
             ) : null}
           </div>
 
           <div className="shrink-0">
+            {showScrollHint ? (
+              <div className="px-4 pt-2 pb-1 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    isAutoScrolling.current = true
+                    setShowScrollHint(false)
+                    scrollToBottom()
+                  }}
+                  className="text-[11.5px] px-3 py-1.5 rounded-full bg-white border hairline text-pine shadow-sm hover:bg-pine hover:text-white transition"
+                >
+                  回到底部
+                </button>
+              </div>
+            ) : null}
+            {typing ? (
+              <div className="px-4 pb-2 text-[11.5px] text-ink/45 flex items-center justify-between gap-2">
+                <span>AI 正在回答，期间快捷问题已暂停</span>
+                <button type="button" onClick={stopAnswer} className="font-bold text-terracotta hover:text-pine transition">
+                  停止回答
+                </button>
+              </div>
+            ) : null}
             <div className="px-4 pb-3 flex flex-wrap gap-2 overflow-x-auto scrollbar-hide no-wrap">
               {AI_QUICK_QUESTIONS.slice(0, 4).map((item) => (
-                <button key={item} type="button" onClick={() => ask(item)} className="whitespace-nowrap text-[11.5px] px-3.5 py-2 rounded-full bg-ink/6 text-ink/70 hover:bg-ink hover:text-white transition border hairline">
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => ask(item)}
+                  disabled={typing}
+                  className="whitespace-nowrap text-[11.5px] px-3.5 py-2 rounded-full bg-ink/6 text-ink/70 hover:bg-ink hover:text-white transition border hairline disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-ink/6 disabled:hover:text-ink/70"
+                >
                   {item}
                 </button>
               ))}
             </div>
 
             <form
-              className="w-full max-w-full px-3 pb-3 pt-0 flex gap-2 md:px-4 md:pb-4"
+              className="w-full max-w-full px-3 pb-3 pt-0 md:px-4 md:pb-4"
               style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
               onSubmit={(event) => {
                 event.preventDefault()
+                if (typing) {
+                  stopAnswer()
+                  return
+                }
                 ask(query)
               }}
             >
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="问我：带娃去东京怎么玩？"
-                className="min-w-0 flex-1 rounded-full bg-card border hairline px-4 py-3 text-[16px] leading-5 outline-none focus:border-pine shadow-sm md:px-5 md:text-[14px]"
-              />
-              <button type="submit" className="shrink-0 w-12 h-11 rounded-full bg-pine text-white grid place-items-center hover:bg-terracotta transition disabled:opacity-40 shadow-sm" aria-label="发送问题" disabled={typing}>
-                <span className="material-symbols-outlined">send</span>
-              </button>
+              <div className="flex items-end gap-2 rounded-[24px] bg-white border hairline px-3 py-2 shadow-sm focus-within:border-pine">
+                <textarea
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                      event.preventDefault()
+                      if (typing) stopAnswer()
+                      else ask(query)
+                    }
+                  }}
+                  rows={1}
+                  placeholder={typing ? '正在回答中，可先输入下一句' : '问问日本旅行、购物或交通安排'}
+                  className="max-h-28 min-h-[42px] min-w-0 flex-1 resize-none bg-transparent px-2 py-2.5 text-[16px] leading-5 outline-none md:text-[14px]"
+                />
+                <button
+                  type="submit"
+                  className={`shrink-0 h-10 px-4 rounded-full text-white text-[13px] font-bold transition shadow-sm ${typing ? 'bg-terracotta hover:bg-pine' : query.trim() ? 'bg-pine hover:bg-terracotta' : 'bg-ink/30'}`}
+                  aria-label={typing ? '停止回答' : '发送问题'}
+                >
+                  {typing ? '停止' : '发送'}
+                </button>
+              </div>
+              <p className="px-2 pt-2 text-[11px] text-ink/35">按 Enter 发送，Shift + Enter 换行</p>
             </form>
-            <div className="md:hidden h-2" /> {/* Safe area / Keyboard padding */}
+            <div className="md:hidden h-2" /> {/* 安全区与键盘留白 */}
           </div>
         </section>
       ) : (
-        <button type="button" onClick={() => setOpen(true)} className="group rounded-full bg-ink text-white shadow-2xl border border-white/10 pl-4 pr-5 py-3 flex items-center gap-3 hover:bg-pine transition">
-          <span className="w-11 h-11 rounded-full bg-white/12 grid place-items-center group-hover:bg-white/18">
-            <span className="material-symbols-outlined">smart_toy</span>
+        <button type="button" onClick={() => setOpen(true)} className="group rounded-full bg-ink text-white shadow-2xl border border-white/10 pl-3 pr-5 py-3 flex items-center gap-3 hover:bg-pine transition">
+          <span className="w-11 h-11 rounded-full bg-white/12 grid place-items-center group-hover:bg-white/18 font-black">
+            旅
           </span>
           <span className="text-left hidden sm:block">
-            <span className="block text-[11px] tracking-[.2em] uppercase text-white/55">Ask AI</span>
-            <span className="block serif font-bold">日本旅游小助手</span>
+            <span className="block text-[11px] tracking-[.18em] text-white/55">旅行助手</span>
+            <span className="block serif font-bold">问问日本攻略</span>
           </span>
         </button>
       )}
@@ -475,7 +621,13 @@ export default function AiTravelAssistant() {
           <p className="text-[12px] font-bold text-ink mb-2">可以这样问我</p>
           <div className="space-y-1.5">
             {latestTips.map((item) => (
-              <button key={item.id} type="button" onClick={() => ask(item.title)} className="block w-full min-h-[40px] text-left text-[12px] text-ink/65 hover:text-pine truncate">
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => ask(item.title)}
+                disabled={typing}
+                className="block w-full min-h-[40px] text-left text-[12px] text-ink/65 hover:text-pine truncate disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-ink/65"
+              >
                 {item.title}
               </button>
             ))}

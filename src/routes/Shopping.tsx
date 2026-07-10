@@ -101,7 +101,7 @@ export default function Shopping() {
         <ZoomImg src="/images/tokyo_shibuya.jpg" alt="日本购物指南" className="absolute inset-0 w-full h-full object-cover" disabled />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/94 via-ink/90 to-ink/98" />
         <div className="relative max-w-6xl mx-auto px-6 md:px-10 py-20 md:py-24 drop-shadow-[0_2px_18px_rgba(45,36,32,0.36)]">
-          <span className="eyebrow-light">Trend Shopping · Japan Price Gap</span>
+          <span className="eyebrow-light">日本购物 · 价差清单</span>
           <h1 className="text-white text-[clamp(2.8rem,8vw,6rem)] font-black serif mt-4 leading-[.94] tracking-[-.06em]">
             日本购物
             <br />
@@ -116,7 +116,7 @@ export default function Shopping() {
             {[
               ['完整商品池', `${SOUVENIRS.length} 件`],
               ['分类数量', `${categories.length} 类`],
-              ['Top 榜单', 'Top 78'],
+              ['完整榜单', '78 件'],
               ['必逛商圈', `${SHOPPING_DISTRICTS.length} 处`],
             ].map(([label, value]) => (
               <div key={label} className="rounded-2xl border border-white/20 bg-ink/34 backdrop-blur-md p-4 shadow-[0_16px_36px_-24px_rgba(0,0,0,0.75)]">
@@ -135,9 +135,9 @@ export default function Shopping() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <SectionHeader
             index="01"
-            eyebrow="Editor&apos;s Picks"
-            title="Top 12 精选大卡"
-            desc="Top 12 是 Top 50 的前排子集，先把最值得优先买的十二件拎出来，适合第一次去日本直接照着冲。"
+            eyebrow="编辑精选"
+            title="精选十二件大卡"
+            desc="精选十二件是完整榜单的前排子集，先把最值得优先买的十二件拎出来，适合第一次去日本直接照着冲。"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mt-10">
             {top12Items.map((item, index) => (
@@ -151,8 +151,8 @@ export default function Shopping() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <SectionHeader
             index="02"
-            eyebrow="Top 78 Ranking"
-            title="Top 78 完整榜单"
+            eyebrow="78 强榜单"
+            title="78 件完整榜单"
             desc="按真实策展顺序排好，从高频回购护肤、经典药妆零食，到运动休闲、服装、电子产品、奢侈品、时尚饰品和彩妆全部收录。"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-10">
@@ -167,7 +167,7 @@ export default function Shopping() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <SectionHeader
             index="03"
-            eyebrow="Browse by Category"
+            eyebrow="按分类浏览"
             title="分类逛好物 · 27 类"
             desc="按场景来逛最省脑：护肤、零食、家电、运动休闲、服装、电子产品、奢侈品、药品、饰品和彩妆都拆开了，切分类时不会空洞。"
           />
@@ -216,7 +216,7 @@ export default function Shopping() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <SectionHeader
             index="04"
-            eyebrow="Shopping Tips"
+            eyebrow="购物提示"
             title="逛街顺序 · 免税 · 打包攻略"
             desc="把容易踩坑的地方先讲清楚，实际逛起来会轻松很多。"
           />
@@ -247,7 +247,7 @@ export default function Shopping() {
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <SectionHeader
             index="05"
-            eyebrow="Where to Shop"
+            eyebrow="商圈地图"
             title="必逛购物商圈"
             desc="补齐了营业时间、地址和地图跳转。逛百货、扫药妆、买二次元、冲机场伴手礼，都能快速找入口。"
           />

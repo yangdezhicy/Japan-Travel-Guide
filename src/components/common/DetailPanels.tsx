@@ -224,7 +224,7 @@ export function FoodDetailContent({ foodId, onClose }: FoodDetailContentProps) {
     <>
       <FavBtn type="foods" id={foodId} pos="modal" />
       <div className="p-6 md:p-8 pt-16">
-        <p className="eyebrow mb-2">{region.en} · Gourmet Ranking</p>
+        <p className="eyebrow mb-2">{region.name} · 美食榜单</p>
         <h3 className="serif font-black text-2xl md:text-3xl text-ink leading-tight">{item.title}</h3>
         <p className="text-ink/70 leading-7 mt-3 text-[13.5px]">{item.desc}</p>
         <div className="mt-6 mb-2 flex items-center justify-between gap-4 flex-wrap">
@@ -428,7 +428,7 @@ export function IntroDetailContent({ index, onClose }: IntroDetailContentProps) 
   return (
     <>
       <div className="p-6 md:p-8">
-        <p className="eyebrow mb-2">Japan Overview</p>
+        <p className="eyebrow mb-2">日本概览</p>
         <h3 className="serif font-black text-2xl md:text-3xl text-ink leading-tight">{config.title}</h3>
         <p className="text-[13.5px] text-ink/70 leading-7 mt-3">{getIntroSubtitle(config.type)}</p>
 
@@ -443,19 +443,19 @@ export function IntroDetailContent({ index, onClose }: IntroDetailContentProps) 
                     </span>
                     <div>
                       <p className="serif font-semibold text-[14px] text-ink">{region.name}</p>
-                      <p className="text-[11px] text-ink/45 tracking-[.2em] uppercase">{region.en}</p>
+                      <p className="text-[11px] text-ink/45 tracking-[.12em]">{region.jp}</p>
                     </div>
                   </div>
                   <p className="text-[12px] text-ink/70">{INTRO_REGION_SUMMARY[region.id]}</p>
                   <p className="text-[11px] text-muted mt-2 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-pine text-[16px]">map</span>
+                    <span className="text-pine text-[14px]">图</span>
                     {region.spots.length} 个景点收录
                   </p>
                 </div>
               ))}
             </div>
             <Link to="/?section=destinations" onClick={onClose} className="mt-6 inline-flex w-full md:w-auto btn-primary px-6 py-3 rounded-full items-center justify-center gap-2 text-[13px] font-semibold">
-              <span className="material-symbols-outlined text-[18px]">explore</span>
+              <span className="text-[16px]">🧭</span>
               前往目的地版块
             </Link>
           </>

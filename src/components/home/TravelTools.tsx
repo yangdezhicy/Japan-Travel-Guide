@@ -35,7 +35,7 @@ const ROUTES: RouteOption[] = [
 
 const VJW_STEPS = [
   '确认护照有效期、签证与机票酒店信息',
-  '注册 Visit Japan Web 账号并录入旅客信息',
+  '注册入境手续系统账号并录入旅客信息',
   '填写入境审查与海关申报，生成二维码',
   '截图保存二维码，并准备酒店英文/日文地址',
   '出发前检查 eSIM、交通卡、保险与常备药',
@@ -88,15 +88,15 @@ export default function TravelTools() {
   }
 
   return (
-    <section id="tools" className="relative py-20 md:py-24 bg-paper overflow-hidden">
-      <div className="absolute -top-28 -right-24 w-72 h-72 rounded-full bg-terracotta/10 blur-3xl" />
-      <div className="absolute bottom-12 -left-24 w-72 h-72 rounded-full bg-pine/10 blur-3xl" />
+    <section id="tools" className="relative py-16 md:py-20 bg-white overflow-hidden">
+      <div className="hidden absolute -top-28 -right-24 w-72 h-72 rounded-full bg-terracotta/10 blur-3xl" />
+      <div className="hidden absolute bottom-12 -left-24 w-72 h-72 rounded-full bg-pine/10 blur-3xl" />
 
       <div className="relative max-w-6xl mx-auto px-5 sm:px-6 md:px-10">
         <div className="max-w-3xl mb-10 reveal show">
           <div className="flex items-center gap-3 mb-5">
             <span className="section-num">— 07</span>
-            <span className="eyebrow">Smart Travel Tools</span>
+            <span className="eyebrow">旅行工具</span>
           </div>
           <h2 className="text-[clamp(2rem,7vw,3.25rem)] font-black serif leading-tight">旅行工具箱 · 边查边规划</h2>
           <div className="section-rule mt-6 mb-5" />
@@ -110,10 +110,10 @@ export default function TravelTools() {
             <div className="tool-card bg-card rounded-3xl border hairline p-6 shadow-sm">
               <div className="flex items-center justify-between gap-3 mb-5">
                 <div>
-                  <p className="eyebrow text-pine">Currency</p>
+                  <p className="eyebrow text-pine">汇率换算</p>
                   <h3 className="serif font-black text-xl mt-1">日元 / 人民币换算</h3>
                 </div>
-                <span className="material-symbols-outlined text-terracotta text-3xl">currency_yen</span>
+                <span className="text-terracotta text-3xl font-black">¥</span>
               </div>
               <label className="text-[12px] font-bold text-ink/55">输入日元金额</label>
               <input
@@ -132,10 +132,10 @@ export default function TravelTools() {
             <div className="tool-card bg-card rounded-3xl border hairline p-6 shadow-sm">
               <div className="flex items-center justify-between gap-3 mb-5">
                 <div>
-                  <p className="eyebrow text-pine">Tax Free</p>
+                  <p className="eyebrow text-pine">免税估算</p>
                   <h3 className="serif font-black text-xl mt-1">退税实付估算</h3>
                 </div>
-                <span className="material-symbols-outlined text-terracotta text-3xl">receipt_long</span>
+                <span className="text-terracotta text-2xl">🧾</span>
               </div>
               <label className="text-[12px] font-bold text-ink/55">含税标价（日元）</label>
               <input
@@ -160,7 +160,7 @@ export default function TravelTools() {
             <div className="tool-card md:col-span-2 bg-card rounded-3xl border hairline p-6 shadow-sm">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
                 <div>
-                  <p className="eyebrow text-pine">JR Pass Checker</p>
+                  <p className="eyebrow text-pine">交通试算</p>
                   <h3 className="serif font-black text-xl mt-1">JR Pass 7 日券盈亏试算</h3>
                 </div>
                 <div className="rounded-full bg-ink text-white px-4 py-2 text-[12px] font-bold">全国版参考 {formatJPY(JR_PASS_7_DAYS)}</div>
@@ -192,7 +192,7 @@ export default function TravelTools() {
 
           <div className="space-y-5">
             <div className="tool-card bg-ink text-white rounded-3xl p-6 shadow-sm">
-              <p className="eyebrow-light">VJW Checklist</p>
+              <p className="eyebrow-light">入境清单</p>
               <h3 className="serif font-black text-xl mt-1 mb-5">入境清单</h3>
               <div className="space-y-3">
                 {VJW_STEPS.map((step) => {
@@ -200,7 +200,7 @@ export default function TravelTools() {
                   return (
                     <button key={step} type="button" onClick={() => toggleStep(step)} className="w-full flex items-start gap-3 text-left min-h-[44px]">
                       <span className={`mt-0.5 w-5 h-5 rounded-full border grid place-items-center shrink-0 ${active ? 'bg-terracotta border-terracotta' : 'border-white/30'}`}>
-                        {active ? <span className="material-symbols-outlined text-[14px]">check</span> : null}
+                        {active ? <span className="text-[12px]">✓</span> : null}
                       </span>
                       <span className={`text-[13px] leading-6 ${active ? 'text-white/45 line-through' : 'text-white/82'}`}>{step}</span>
                     </button>
@@ -210,7 +210,7 @@ export default function TravelTools() {
             </div>
 
             <div className="tool-card bg-card rounded-3xl border hairline p-6 shadow-sm">
-              <p className="eyebrow text-pine">Emergency Card</p>
+              <p className="eyebrow text-pine">求助卡</p>
               <h3 className="serif font-black text-xl mt-1 mb-4">日语求助卡</h3>
               <input value={allergy} onChange={(event) => setAllergy(event.target.value)} className="w-full rounded-2xl bg-paper border hairline px-4 py-3 outline-none focus:border-pine" />
               <div className="mt-4 rounded-2xl bg-paper p-4 text-[13px] leading-7">

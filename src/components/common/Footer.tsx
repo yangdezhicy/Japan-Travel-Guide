@@ -22,7 +22,7 @@ export default function Footer({ compact = false }) {
               <div>
                 <div className="serif font-bold text-lg text-sand">日本旅游全攻略</div>
                 <div className="text-[10px] tracking-[.3em] uppercase text-sand/50 mt-0.5">
-                  {compact ? 'Personal Wishlist' : 'Editorial Japan · 2026'}
+                  {compact ? '我的旅行心愿单' : '日本旅行编辑整理 · 2026'}
                 </div>
               </div>
             </div>

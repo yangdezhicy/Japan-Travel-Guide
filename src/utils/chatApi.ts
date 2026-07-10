@@ -5,11 +5,9 @@ export interface WireMessage {
 }
 
 /* 默认 AI 后端服务地址。
- * 当前默认指向用户自有服务器：115.159.221.212:15325。
+ * 生产环境默认使用正式域名，由 Nginx 将 /api 反向代理到模型服务。
  * 如需切换后端，可在构建时通过 VITE_API_BASE_URL 覆盖。 */
-const DEFAULT_API_BASE = window.location.protocol === 'https:'
-  ? 'https://115.159.221.212:15325'
-  : 'http://115.159.221.212:15325'
+const DEFAULT_API_BASE = 'https://www.yangdezhi.com.cn'
 
 const API_BASE = ((import.meta.env.VITE_API_BASE_URL as string | undefined) || DEFAULT_API_BASE).replace(/\/$/, '')
 
@@ -42,8 +40,11 @@ export async function chatWithBackendStream(
   messages: WireMessage[],
   knowledge: string,
   onDelta: (delta: string, full: string) => void,
+  signal?: AbortSignal,
 ): Promise<string> {
   const controller = new AbortController()
+  const abortStream = () => controller.abort()
+  signal?.addEventListener('abort', abortStream, { once: true })
   const timer = window.setTimeout(() => controller.abort(), 90000)
   try {
     const res = await fetch(`${API_BASE}/api/chat/stream`, {
@@ -91,6 +92,7 @@ export async function chatWithBackendStream(
     if (!full) throw new Error(errMsg || '空响应')
     return full
   } finally {
+    signal?.removeEventListener('abort', abortStream)
     window.clearTimeout(timer)
   }
 }

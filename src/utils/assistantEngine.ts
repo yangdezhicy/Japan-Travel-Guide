@@ -276,7 +276,7 @@ function buildShopping(category: SouvenirCategory | null): AssistantReply {
   const items = category ? topSouvenirs([category], 5) : SOUVENIRS.slice().sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 5)
   const label = category ?? '综合好物'
   return {
-    text: `${label}方向，站内购物指南里评分最高的几件（Top 78 榜单可在“购物指南”页查看）：`,
+    text: `${label}方向，站内购物指南里评分最高的几件（78 件榜单可在“购物指南”页查看）：`,
     bullets: items.map((s) => `${s.name}｜${s.jpy} / ${s.cny}：${s.short}`),
     chips: ['药妆买什么？', '电子产品推荐', '奢侈品/中古怎么逛？', '免税怎么退？'],
     sources: ['站内购物指南'],
@@ -366,7 +366,7 @@ function buildOverview(): AssistantReply {
     text: '我可以基于站内真实数据帮你规划日本行程，也能给购物、美食、季节、交通建议。告诉我城市/天数/同行人，会更精准，比如“带爸妈去京都大阪玩 5 天”。',
     bullets: [
       '行程规划：东京、京都、大阪、富士箱根、奈良、北海道、冲绳',
-      '购物清单：药妆、彩妆、电子、奢侈中古、运动潮流（Top 78 榜单）',
+      '购物清单：药妆、彩妆、电子、奢侈中古、运动潮流（78 件榜单）',
       '美食推荐：各地地道店铺榜单',
       '实用信息：季节、交通、预算、活动、礼仪与紧急联络',
     ],
@@ -506,7 +506,7 @@ export function buildKnowledgeContext(rawQuery: string, ctx: AssistantContext): 
   const intent = detectIntent(text)
   const sections: string[] = []
 
-  sections.push('【网站结构】首页含：七大目的地景点、各地美食榜单、旅行影像、四季物语、当地活动、旅行工具箱(JR Pass盈亏试算/汇率退税/VJW清单/天气穿衣/日语求助卡)；另有「我的收藏」页与「购物指南」页（必买 Top 78 榜单、27 个分类、真实商品图与价格、购物商圈地图）。')
+  sections.push('【网站结构】首页含：七大目的地景点、各地美食榜单、旅行影像、四季物语、当地活动、旅行工具箱(JR Pass盈亏试算/汇率退税/入境清单/天气穿衣/日语求助卡)；另有「我的收藏」页与「购物指南」页（必买 78 件榜单、27 个分类、真实商品图与价格、购物商圈地图）。')
 
   const budgetLabel: Record<BudgetLevel, string> = { low: '经济省钱', mid: '舒适适中', high: '品质高端' }
   const companionLabel: Record<Companion, string> = { family: '亲子(带小孩)', elder: '带长辈', couple: '情侣', friends: '结伴出游', solo: '独自旅行' }

@@ -85,6 +85,10 @@ h4,
   vertical-align: middle;
 }
 
+body:not(.material-icons-ready) .material-symbols-outlined {
+  opacity: 0;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -145,7 +149,7 @@ h4,
 }
 
 .glass {
-  background: rgba(244, 241, 234, 0.82);
+  background: rgba(247, 244, 239, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -195,8 +199,8 @@ h4,
 .spot-card:hover,
 .sv-card:hover,
 .event-card:hover {
-  box-shadow: 0 24px 48px -18px rgba(28, 27, 25, 0.18);
-  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -22px rgba(28, 27, 25, 0.18);
+  transform: translateY(-2px);
   border-color: rgba(35, 78, 67, 0.22);
 }
 

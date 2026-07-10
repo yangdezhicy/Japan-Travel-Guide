@@ -15,7 +15,7 @@ export default function Videos({ activeRegionId }: VideosProps) {
         <div className="max-w-3xl mb-12 reveal show">
           <div className="flex items-center gap-3 mb-5">
             <span className="section-num">— 05</span>
-            <span className="eyebrow">Travel Films</span>
+            <span className="eyebrow">旅行影像</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black serif leading-tight">{region.name} · 旅行影像</h2>
           <div className="section-rule mt-6 mb-5" />
