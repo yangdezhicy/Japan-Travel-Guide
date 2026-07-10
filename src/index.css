@@ -17,6 +17,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -25,6 +26,7 @@ body {
   background: radial-gradient(circle at 14% 6%, rgba(216, 74, 56, 0.12), transparent 28%), radial-gradient(circle at 86% 2%, rgba(31, 58, 95, 0.10), transparent 30%), linear-gradient(180deg, #fffdf8 0%, #faf7f0 45%, #ffffff 100%);
   color: var(--ink);
   min-width: 320px;
+  overflow-x: hidden;
 }
 
 html.ai-assistant-open,
@@ -64,6 +66,21 @@ h4,
 }
 
 .material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  min-width: 1em;
+  max-width: 1em;
+  overflow: hidden;
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   vertical-align: middle;
 }
