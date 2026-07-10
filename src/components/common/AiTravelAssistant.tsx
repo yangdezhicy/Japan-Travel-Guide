@@ -140,6 +140,7 @@ export default function AiTravelAssistant() {
   const contextRef = useRef<AssistantContext>(persisted?.context ?? createInitialContext())
   const idRef = useRef(persisted?.lastId ?? 0)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const lastTouchYRef = useRef(0)
 
   const latestTips = useMemo(() => TRAVEL_KNOWLEDGE_BASE.slice(0, 4), [])
 
@@ -151,9 +152,55 @@ export default function AiTravelAssistant() {
     document.documentElement.classList.toggle('ai-assistant-open', open)
     document.body.classList.toggle('ai-assistant-open', open)
 
+    if (!open) {
+      return () => {
+        document.documentElement.classList.remove('ai-assistant-open')
+        document.body.classList.remove('ai-assistant-open')
+      }
+    }
+
+    const getScrollBox = (target: EventTarget | null) => {
+      const node = target instanceof Element ? target : null
+      return node?.closest('.ai-assistant-scroll') as HTMLElement | null
+    }
+
+    const shouldLock = (target: EventTarget | null, deltaY: number) => {
+      const scrollBox = getScrollBox(target)
+      if (!scrollBox) return true
+
+      const canScroll = scrollBox.scrollHeight > scrollBox.clientHeight + 1
+      if (!canScroll) return true
+
+      const atTop = scrollBox.scrollTop <= 0
+      const atBottom = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - 1
+      return (deltaY < 0 && atTop) || (deltaY > 0 && atBottom)
+    }
+
+    const lockWheel = (event: WheelEvent) => {
+      if (shouldLock(event.target, event.deltaY)) event.preventDefault()
+    }
+
+    const recordTouch = (event: TouchEvent) => {
+      lastTouchYRef.current = event.touches[0]?.clientY ?? 0
+    }
+
+    const lockTouch = (event: TouchEvent) => {
+      const currentY = event.touches[0]?.clientY ?? lastTouchYRef.current
+      const deltaY = lastTouchYRef.current - currentY
+      lastTouchYRef.current = currentY
+      if (shouldLock(event.target, deltaY)) event.preventDefault()
+    }
+
+    document.addEventListener('wheel', lockWheel, { passive: false, capture: true })
+    document.addEventListener('touchstart', recordTouch, { passive: true, capture: true })
+    document.addEventListener('touchmove', lockTouch, { passive: false, capture: true })
+
     return () => {
       document.documentElement.classList.remove('ai-assistant-open')
       document.body.classList.remove('ai-assistant-open')
+      document.removeEventListener('wheel', lockWheel, { capture: true })
+      document.removeEventListener('touchstart', recordTouch, { capture: true })
+      document.removeEventListener('touchmove', lockTouch, { capture: true })
     }
   }, [open])
 

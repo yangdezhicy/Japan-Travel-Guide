@@ -1,67 +1,79 @@
 import { useEffect, useState } from 'react'
 
 /**
- * useScrollSpy —— 观察多个 section 元素，返回当前处于视口"活跃区"的 section id。
+ * useScrollSpy —— 基于固定导航栏下方的“阅读线”计算当前 section。
  *
- * 建议 rootMargin: "-30% 0px -60% 0px"，threshold: 0，
- * 效果为：section 顶部滚到视口上 1/3 时即视为激活。
+ * 之前使用 IntersectionObserver 的窄 rootMargin，在长短 section 交界处容易提前/滞后。
+ * 这里改为 scroll/resize 时直接按 DOM 位置计算：阅读线落在哪个 section，就激活哪个 section。
  */
-export function useScrollSpy(
-  sectionIds: string[],
-  options?: IntersectionObserverInit,
-): string | null {
+export function useScrollSpy(sectionIds: string[]): string | null {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (typeof IntersectionObserver === 'undefined') return
     if (!sectionIds.length) {
       setActiveId(null)
       return
     }
 
-    const elements: HTMLElement[] = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el))
+    let frame = 0
 
-    if (!elements.length) {
-      setActiveId(null)
-      return
-    }
+    const getElements = () =>
+      sectionIds
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => Boolean(el))
 
-    const visibility = new Map<string, number>()
-    for (const el of elements) visibility.set(el.id, 0)
+    const computeActive = () => {
+      frame = 0
+      const elements = getElements()
+      if (!elements.length) {
+        setActiveId(null)
+        return
+      }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = (entry.target as HTMLElement).id
-          if (!id) continue
-          visibility.set(id, entry.isIntersecting ? entry.intersectionRatio || 1 : 0)
+      const navHeight = document.getElementById('nav')?.getBoundingClientRect().height ?? 64
+      const activationY = navHeight + Math.min(160, window.innerHeight * 0.28)
+      const viewportBottom = window.innerHeight
+
+      let next = elements[0].id
+      let closestDistance = Number.POSITIVE_INFINITY
+
+      for (const element of elements) {
+        const rect = element.getBoundingClientRect()
+        const containsLine = rect.top <= activationY && rect.bottom > activationY
+        if (containsLine) {
+          next = element.id
+          break
         }
 
-        // 选择第一个（按 DOM 顺序 / sectionIds 顺序）当前处于活跃区的 section
-        let next: string | null = null
-        for (const id of sectionIds) {
-          if ((visibility.get(id) || 0) > 0) {
-            next = id
-            break
+        if (rect.top <= viewportBottom && rect.bottom >= navHeight) {
+          const distance = Math.abs(rect.top - activationY)
+          if (distance < closestDistance) {
+            closestDistance = distance
+            next = element.id
           }
         }
-        setActiveId(next)
-      },
-      {
-        root: null,
-        rootMargin: '-30% 0px -60% 0px',
-        threshold: 0,
-        ...(options || {}),
-      },
-    )
+      }
 
-    for (const el of elements) observer.observe(el)
-    return () => observer.disconnect()
-    // 依赖：sectionIds 内容变化时重新绑定
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      setActiveId((current) => (current === next ? current : next))
+    }
+
+    const scheduleCompute = () => {
+      if (frame) return
+      frame = window.requestAnimationFrame(computeActive)
+    }
+
+    computeActive()
+    window.addEventListener('scroll', scheduleCompute, { passive: true })
+    window.addEventListener('resize', scheduleCompute)
+    window.addEventListener('hashchange', scheduleCompute)
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', scheduleCompute)
+      window.removeEventListener('resize', scheduleCompute)
+      window.removeEventListener('hashchange', scheduleCompute)
+    }
   }, [sectionIds.join('|')])
 
   return activeId

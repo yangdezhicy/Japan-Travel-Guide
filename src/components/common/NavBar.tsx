@@ -60,16 +60,24 @@ export default function NavBar() {
     return `fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled || open ? 'shadow-md' : ''}`
   }, [scrolled, open])
 
+  const scrollToHomeSection = (sectionId: string) => {
+    if (sectionId === 'top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    const target = document.getElementById(sectionId)
+    if (!target) return
+
+    const navHeight = document.getElementById('nav')?.getBoundingClientRect().height ?? 64
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - navHeight - 8
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
+  }
+
   const goSection = (sectionId: string) => {
     setOpen(false)
     if (isHome) {
-      // 已经在首页：不刷 URL，直接 scroll
-      if (sectionId === 'top') {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      } else {
-        const target = document.getElementById(sectionId)
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
+      scrollToHomeSection(sectionId)
       return
     }
     navigate(`/?section=${sectionId}`)

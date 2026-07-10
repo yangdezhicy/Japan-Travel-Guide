@@ -36,7 +36,9 @@ function scrollToSection(sectionId: string): void {
 
     const target = document.getElementById(sectionId)
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const navHeight = document.getElementById('nav')?.getBoundingClientRect().height ?? 64
+      const targetTop = target.getBoundingClientRect().top + window.scrollY - navHeight - 8
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
     }
   }, 80)
 }
