@@ -10,7 +10,7 @@ import {
 import { backendConfigured, chatWithBackend, chatWithBackendStream, type WireMessage } from '../../utils/chatApi'
 
 /* 从大模型回答的 Markdown 中解析出「分天行程」，用于渲染结构化行程速览卡片。
- * 识别形如「### Day 1｜标题」「## 第2天：标题」等日程小标题，收集其下的要点。 */
+ * 识别形如「### 第1天｜标题」「## 第2天：标题」等日程小标题，收集其下的要点。 */
 function parseItinerary(md: string): ItineraryDay[] {
   const days: ItineraryDay[] = []
   let cur: ItineraryDay | null = null
@@ -19,7 +19,8 @@ function parseItinerary(md: string): ItineraryDay[] {
     const head = line.match(/^#{1,4}\s*(?:🗓️?\s*)?(Day\s*\d+|第\s*\d+\s*天|D\d+)\s*[｜|:：、\-—\s]+\s*(.+?)\s*$/i)
     if (head) {
       if (cur) days.push(cur)
-      cur = { day: head[1].replace(/\s+/g, ''), title: head[2].replace(/[*#]/g, '').trim(), items: [] }
+      const dayLabel = head[1].replace(/\s+/g, '').replace(/^Day(\d+)$/i, '第$1天').replace(/^D(\d+)$/i, '第$1天')
+      cur = { day: dayLabel, title: head[2].replace(/[*#]/g, '').trim(), items: [] }
       continue
     }
     if (cur) {
@@ -320,30 +321,34 @@ export default function AiTravelAssistant() {
     }
   }
 
+  const copyMessage = (text: string) => {
+    if (!text.trim()) return
+    void window.navigator.clipboard?.writeText(text)
+  }
+
   return (
     <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90 }}>
       {open ? (
-        <section className="w-full h-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-3xl bg-paper shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
-          <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #23241f 0%, #2f3a30 55%, #3d5142 100%)' }}>
-            <div className="flex items-start gap-3">
-              <span className="shrink-0 w-11 h-11 rounded-2xl bg-white/12 grid place-items-center border border-white/15">
-                <span className="material-symbols-outlined text-[24px]">smart_toy</span>
+        <section className="w-full h-full md:h-[min(82vh,760px)] md:max-w-[480px] md:rounded-[28px] bg-white shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
+          <div className="shrink-0 px-4 py-3 border-b hairline bg-white/95 backdrop-blur flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="shrink-0 w-10 h-10 rounded-2xl grid place-items-center text-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #eef8f0 0%, #dff0e3 100%)' }}>
+                旅
               </span>
-              <div>
-                <p className="text-[11px] tracking-[.24em] uppercase text-white/55">Japan AI Guide</p>
-                <h3 className="serif font-black text-xl mt-0.5">日本旅游 AI 小助手</h3>
-                <p className="text-white/70 text-[12px] mt-1 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  大模型驱动 · 站内真实数据
+              <div className="min-w-0">
+                <h3 className="font-black text-[15px] text-ink truncate">日本旅行助手</h3>
+                <p className="text-ink/50 text-[12px] mt-0.5 flex items-center gap-1.5 truncate">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  可规划行程、购物、交通和带长辈路线
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-1.5">
-              <button type="button" onClick={clearChat} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center transition" aria-label="清空对话" title="清空对话">
-                <span className="material-symbols-outlined text-[20px]">refresh</span>
+              <button type="button" onClick={clearChat} className="h-8 px-3 rounded-full bg-ink/5 hover:bg-ink/10 text-[12px] text-ink/65 transition" aria-label="清空对话" title="清空对话">
+                清空
               </button>
-              <button type="button" onClick={() => setOpen(false)} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center transition" aria-label="收起 AI 小助手">
-                <span className="material-symbols-outlined">close</span>
+              <button type="button" onClick={() => setOpen(false)} className="w-8 h-8 rounded-full bg-ink/5 hover:bg-ink/10 grid place-items-center text-ink/65 transition" aria-label="收起旅行助手">
+                ×
               </button>
             </div>
           </div>
@@ -352,12 +357,12 @@ export default function AiTravelAssistant() {
             ref={scrollRef}
             onScroll={handleScroll}
             className="flex-1 min-h-0 p-4 overflow-y-auto space-y-4"
-            style={{ background: 'linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%)', scrollBehavior: 'smooth' }}
+            style={{ background: 'linear-gradient(180deg, #f7f8fa 0%, #f4f1ea 100%)', scrollBehavior: 'smooth' }}
           >
-            <div className="md:hidden h-2" /> {/* Mobile top padding */}
+            <div className="md:hidden h-2" /> {/* 手机端顶部留白 */}
             {messages.map((message) => (
               <div key={message.id} className={message.role === 'user' ? 'text-right' : 'text-left'}>
-                <div className={`inline-block max-w-[92%] rounded-2xl px-4 py-3 text-[13px] leading-6 text-left shadow-sm ${message.role === 'user' ? 'bg-pine text-white rounded-br-md' : 'bg-white text-ink/80 border hairline rounded-bl-md'}`}>
+                <div className={`inline-block max-w-[92%] rounded-3xl px-4 py-3 text-[13px] leading-6 text-left shadow-sm ${message.role === 'user' ? 'bg-pine text-white rounded-br-lg' : 'bg-white text-ink/80 border hairline rounded-bl-lg'}`}>
                   {message.role === 'assistant' ? (
                     message.text ? (
                       <>
@@ -367,10 +372,11 @@ export default function AiTravelAssistant() {
                         ) : null}
                       </>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <span className="inline-flex items-center gap-2 text-ink/55">
+                        <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <span>正在思考，马上回答…</span>
                       </span>
                     )
                   ) : (
@@ -384,7 +390,7 @@ export default function AiTravelAssistant() {
                         {message.itinerary.map((d) => (
                           <div key={`${message.id}-${d.day}`} className="shrink-0 rounded-2xl bg-white border hairline overflow-hidden shadow-sm" style={{ width: 158 }}>
                             <div className="px-2.5 py-1.5 text-white flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, #c1694f 0%, #a8543c 100%)' }}>
-                              <span className="material-symbols-outlined text-[14px]">event</span>
+                              <span className="text-[13px]">🗓</span>
                               <span className="text-[11px] font-black tracking-wide">{d.day}</span>
                             </div>
                             <div className="p-2.5">
@@ -444,6 +450,17 @@ export default function AiTravelAssistant() {
                   ) : null}
                 </div>
 
+                {message.role === 'assistant' && message.text && message.id !== 'welcome' && message.id !== streamId ? (
+                  <div className="mt-2 flex items-center gap-2 text-[11.5px] text-ink/45">
+                    <button type="button" onClick={() => copyMessage(message.text)} className="px-2.5 py-1 rounded-full hover:bg-white hover:text-pine transition">
+                      复制
+                    </button>
+                    <button type="button" onClick={() => ask(`请把上面的建议换一种更清晰、更适合手机阅读的方式重新整理：${message.text.slice(0, 120)}`)} disabled={typing} className="px-2.5 py-1 rounded-full hover:bg-white hover:text-pine transition disabled:opacity-40 disabled:cursor-not-allowed">
+                      重新整理
+                    </button>
+                  </div>
+                ) : null}
+
                 {message.role === 'assistant' && message.chips?.length ? (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {message.chips.map((chip) => (
@@ -464,10 +481,11 @@ export default function AiTravelAssistant() {
 
             {typing && !streamId ? (
               <div className="text-left">
-                <div className="inline-flex items-center gap-1.5 rounded-2xl px-4 py-3 bg-card border hairline">
-                  <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-ink/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 bg-white border hairline text-[13px] text-ink/55 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-pine/55 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span>正在整理站内资料…</span>
                 </div>
               </div>
             ) : null}
@@ -512,7 +530,7 @@ export default function AiTravelAssistant() {
             </div>
 
             <form
-              className="p-4 pt-0 flex gap-2"
+              className="px-4 pb-4 pt-0"
               onSubmit={(event) => {
                 event.preventDefault()
                 if (typing) {
@@ -522,31 +540,42 @@ export default function AiTravelAssistant() {
                 ask(query)
               }}
             >
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={typing ? 'AI 正在回答，可先输入下一句，点击停止后再发送' : '问我：带娃去东京怎么玩？'}
-                className="flex-1 rounded-full bg-card border hairline px-5 py-3 text-[14px] outline-none focus:border-pine shadow-sm"
-              />
-              <button
-                type="submit"
-                className={`w-12 h-11 rounded-full text-white grid place-items-center transition shadow-sm ${typing ? 'bg-terracotta hover:bg-pine' : 'bg-pine hover:bg-terracotta'}`}
-                aria-label={typing ? '停止回答' : '发送问题'}
-              >
-                <span className="material-symbols-outlined">{typing ? 'stop_circle' : 'send'}</span>
-              </button>
+              <div className="flex items-end gap-2 rounded-[24px] bg-white border hairline px-3 py-2 shadow-sm focus-within:border-pine">
+                <textarea
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                      event.preventDefault()
+                      if (typing) stopAnswer()
+                      else ask(query)
+                    }
+                  }}
+                  rows={1}
+                  placeholder={typing ? '正在回答中，可先输入下一句' : '问问日本旅行、购物或交通安排'}
+                  className="max-h-28 min-h-[42px] flex-1 resize-none bg-transparent px-2 py-2.5 text-[14px] leading-5 outline-none"
+                />
+                <button
+                  type="submit"
+                  className={`h-10 px-4 rounded-full text-white text-[13px] font-bold transition shadow-sm ${typing ? 'bg-terracotta hover:bg-pine' : query.trim() ? 'bg-pine hover:bg-terracotta' : 'bg-ink/30'}`}
+                  aria-label={typing ? '停止回答' : '发送问题'}
+                >
+                  {typing ? '停止' : '发送'}
+                </button>
+              </div>
+              <p className="px-2 pt-2 text-[11px] text-ink/35">按 Enter 发送，Shift + Enter 换行</p>
             </form>
-            <div className="md:hidden h-2" /> {/* Safe area / Keyboard padding */}
+            <div className="md:hidden h-2" /> {/* 安全区与键盘留白 */}
           </div>
         </section>
       ) : (
-        <button type="button" onClick={() => setOpen(true)} className="group rounded-full bg-ink text-white shadow-2xl border border-white/10 pl-4 pr-5 py-3 flex items-center gap-3 hover:bg-pine transition">
-          <span className="w-11 h-11 rounded-full bg-white/12 grid place-items-center group-hover:bg-white/18">
-            <span className="material-symbols-outlined">smart_toy</span>
+        <button type="button" onClick={() => setOpen(true)} className="group rounded-full bg-ink text-white shadow-2xl border border-white/10 pl-3 pr-5 py-3 flex items-center gap-3 hover:bg-pine transition">
+          <span className="w-11 h-11 rounded-full bg-white/12 grid place-items-center group-hover:bg-white/18 font-black">
+            旅
           </span>
           <span className="text-left hidden sm:block">
-            <span className="block text-[11px] tracking-[.2em] uppercase text-white/55">Ask AI</span>
-            <span className="block serif font-bold">日本旅游小助手</span>
+            <span className="block text-[11px] tracking-[.18em] text-white/55">旅行助手</span>
+            <span className="block serif font-bold">问问日本攻略</span>
           </span>
         </button>
       )}
