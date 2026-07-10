@@ -282,10 +282,10 @@ export default function AiTravelAssistant() {
   }
 
   return (
-    <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90 }}>
+    <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90, maxWidth: open ? '100vw' : undefined }}>
       {open ? (
         <section
-          className="ai-assistant-panel w-full h-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-[28px] bg-card shadow-2xl md:border md:hairline overflow-hidden flex flex-col"
+          className="ai-assistant-panel w-[100dvw] max-w-full h-[100dvh] md:w-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-[28px] bg-card shadow-2xl md:border md:hairline overflow-hidden flex flex-col"
           onWheel={handlePanelWheel}
           onTouchStart={handlePanelTouchStart}
           onTouchMove={handlePanelTouchMove}
@@ -438,7 +438,8 @@ export default function AiTravelAssistant() {
             </div>
 
             <form
-              className="p-4 pt-0 flex gap-2"
+              className="w-full max-w-full px-3 pb-3 pt-0 flex gap-2 md:px-4 md:pb-4"
+              style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
               onSubmit={(event) => {
                 event.preventDefault()
                 ask(query)
@@ -448,9 +449,9 @@ export default function AiTravelAssistant() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="问我：带娃去东京怎么玩？"
-                className="flex-1 rounded-full bg-card border hairline px-5 py-3 text-[14px] outline-none focus:border-pine shadow-sm"
+                className="min-w-0 flex-1 rounded-full bg-card border hairline px-4 py-3 text-[16px] leading-5 outline-none focus:border-pine shadow-sm md:px-5 md:text-[14px]"
               />
-              <button type="submit" className="w-12 h-11 rounded-full bg-pine text-white grid place-items-center hover:bg-terracotta transition disabled:opacity-40 shadow-sm" aria-label="发送问题" disabled={typing}>
+              <button type="submit" className="shrink-0 w-12 h-11 rounded-full bg-pine text-white grid place-items-center hover:bg-terracotta transition disabled:opacity-40 shadow-sm" aria-label="发送问题" disabled={typing}>
                 <span className="material-symbols-outlined">send</span>
               </button>
             </form>
