@@ -140,12 +140,40 @@ export default function AiTravelAssistant() {
   const contextRef = useRef<AssistantContext>(persisted?.context ?? createInitialContext())
   const idRef = useRef(persisted?.lastId ?? 0)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollLockRef = useRef(0)
 
   const latestTips = useMemo(() => TRAVEL_KNOWLEDGE_BASE.slice(0, 4), [])
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, typing, open])
+
+  useEffect(() => {
+    const unlockPage = () => {
+      document.documentElement.classList.remove('ai-assistant-open')
+      document.body.classList.remove('ai-assistant-open')
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
+      document.body.style.width = ''
+      window.scrollTo(0, scrollLockRef.current)
+    }
+
+    if (open) {
+      scrollLockRef.current = window.scrollY
+      document.documentElement.classList.add('ai-assistant-open')
+      document.body.classList.add('ai-assistant-open')
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollLockRef.current}px`
+      document.body.style.left = '0'
+      document.body.style.right = '0'
+      document.body.style.width = '100%'
+    } else {
+      unlockPage()
+    }
+    return unlockPage
+  }, [open])
 
   useEffect(() => {
     try {
@@ -254,8 +282,8 @@ export default function AiTravelAssistant() {
   return (
     <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90 }}>
       {open ? (
-        <section className="w-full h-full md:h-auto md:max-w-md md:rounded-3xl bg-paper shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
-          <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #23241f 0%, #2f3a30 55%, #3d5142 100%)' }}>
+        <section className="ai-assistant-panel w-full h-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-[28px] bg-card shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
+          <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #1d1d1f 0%, #2d2d30 55%, #0071e3 100%)' }}>
             <div className="flex items-start gap-3">
               <span className="shrink-0 w-11 h-11 rounded-2xl bg-white/12 grid place-items-center border border-white/15">
                 <span className="material-symbols-outlined text-[24px]">smart_toy</span>
@@ -279,7 +307,7 @@ export default function AiTravelAssistant() {
             </div>
           </div>
 
-          <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-4" style={{ background: 'linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%)' }}>
+          <div ref={scrollRef} className="ai-assistant-scroll flex-1 p-4 overflow-y-auto space-y-4" style={{ background: 'linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 100%)' }}>
             <div className="md:hidden h-2" /> {/* Mobile top padding */}
             {messages.map((message) => (
               <div key={message.id} className={message.role === 'user' ? 'text-right' : 'text-left'}>
@@ -309,7 +337,7 @@ export default function AiTravelAssistant() {
                       <div className="flex gap-2.5 overflow-x-auto pb-1">
                         {message.itinerary.map((d) => (
                           <div key={`${message.id}-${d.day}`} className="shrink-0 rounded-2xl bg-white border hairline overflow-hidden shadow-sm" style={{ width: 158 }}>
-                            <div className="px-2.5 py-1.5 text-white flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, #c1694f 0%, #a8543c 100%)' }}>
+                            <div className="px-2.5 py-1.5 text-white flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, #1d1d1f 0%, #0071e3 100%)' }}>
                               <span className="material-symbols-outlined text-[14px]">event</span>
                               <span className="text-[11px] font-black tracking-wide">{d.day}</span>
                             </div>
