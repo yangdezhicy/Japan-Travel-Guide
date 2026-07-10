@@ -18,7 +18,7 @@ export default function Food({ activeRegionId, onOpenFood }: FoodProps) {
         <div className="max-w-3xl mb-12 reveal show">
           <div className="flex items-center gap-3 mb-5">
             <span className="section-num">— 04</span>
-            <span className="eyebrow">Gourmet · Local Tastes</span>
+            <span className="eyebrow">当地美食</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black serif leading-tight">{region.name} · 舌尖上的味道</h2>
           <div className="section-rule mt-6 mb-5" />

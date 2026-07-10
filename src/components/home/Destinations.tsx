@@ -21,7 +21,7 @@ export default function Destinations({ activeRegionId, onChangeRegion, onOpenSpo
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-5">
               <span className="section-num">— 03</span>
-              <span className="eyebrow">Destinations</span>
+              <span className="eyebrow">目的地指南</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black serif leading-tight">七大目的地 · 深度指南</h2>
             <div className="section-rule mt-6 mb-5" />
@@ -30,7 +30,7 @@ export default function Destinations({ activeRegionId, onChangeRegion, onOpenSpo
             </p>
           </div>
           <div className="hidden md:flex items-center gap-2 text-muted text-[13px]">
-            <span className="material-symbols-outlined text-[18px]">swipe</span>
+            <span className="text-[16px]">↔</span>
             横向滑动切换
           </div>
         </div>
@@ -50,7 +50,6 @@ export default function Destinations({ activeRegionId, onChangeRegion, onOpenSpo
                 }`}
               >
                 <span className="tracking-wide">{item.name}</span>
-                <span className="ml-2 text-[10px] tracking-[.2em] opacity-60">{item.en}</span>
               </button>
             )
           })}
@@ -59,7 +58,7 @@ export default function Destinations({ activeRegionId, onChangeRegion, onOpenSpo
         <div className="mb-10 border-b hairline pb-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
-              <p className="eyebrow mb-3">{region.en}</p>
+              <p className="eyebrow mb-3">区域速览</p>
               <h3 className="text-4xl md:text-5xl font-black serif leading-tight">
                 {region.name} <span className="text-ink/25 text-2xl font-normal ml-2">{region.jp}</span>
               </h3>
@@ -97,24 +96,24 @@ export default function Destinations({ activeRegionId, onChangeRegion, onOpenSpo
                   <p className="text-ink/70 text-[14px] leading-7 mb-5">{spot.desc}</p>
                   <div className="mt-auto space-y-2.5 text-[13px]">
                     <div className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-pine text-[18px] mt-0.5">schedule</span>
+                      <span className="text-pine text-[15px] mt-0.5">时</span>
                       <span className="text-ink/60"><b className="text-ink/85 mr-1">开放</b>{spot.hours}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-pine text-[18px] mt-0.5">confirmation_number</span>
+                      <span className="text-pine text-[15px] mt-0.5">票</span>
                       <span className="text-ink/60"><b className="text-ink/85 mr-1">门票</b>{spot.ticket}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-pine text-[18px] mt-0.5">hourglass_top</span>
+                      <span className="text-pine text-[15px] mt-0.5">久</span>
                       <span className="text-ink/60"><b className="text-ink/85 mr-1">时长</b>{spot.duration}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-pine text-[18px] mt-0.5">directions_transit</span>
+                      <span className="text-pine text-[15px] mt-0.5">行</span>
                       <span className="text-ink/60"><b className="text-ink/85 mr-1">交通</b>{spot.transport}</span>
                     </div>
                   </div>
                   <div className="mt-5 bg-sand/40 border hairline rounded-xl p-3.5 flex gap-2">
-                    <span className="material-symbols-outlined text-terracotta text-[18px] mt-0.5">lightbulb</span>
+                    <span className="text-terracotta text-[16px] mt-0.5">※</span>
                     <p className="text-[13px] text-ink/70 leading-6">
                       <b className="text-terracottaDark mr-1">贴士</b>
                       {spot.tip}
@@ -122,7 +121,7 @@ export default function Destinations({ activeRegionId, onChangeRegion, onOpenSpo
                   </div>
                   <div className="mt-5 flex items-center gap-2 text-pine font-semibold text-[13px] group-hover:gap-3 transition-all">
                     <span>查看详情 · 美食 · 打卡 · 住宿</span>
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    <span className="text-[18px]">→</span>
                   </div>
                 </div>
               </article>

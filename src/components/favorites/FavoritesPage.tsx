@@ -69,7 +69,7 @@ function EmptyState({ icon, text, buttonText, onJump }: EmptyStateProps) {
         onClick={onJump}
         className="mt-6 inline-flex btn-primary px-6 py-3 rounded-full items-center gap-2 font-semibold text-[13px]"
       >
-        <span className="material-symbols-outlined text-[18px]">explore</span>
+        <span className="text-[16px]">🧭</span>
         {buttonText}
       </button>
     </div>
@@ -198,10 +198,10 @@ export default function FavoritesPage({
   const currentConfig = TAB_CONFIG[activeTab]
 
   const statCards: Array<[string, string, number]> = [
-    ['Destinations', '地点', counts.spots],
-    ['Gourmet', '美食', counts.foods],
-    ['Souvenirs', '纪念品', counts.souvenirs],
-    ['Local Events', '活动', counts.events],
+    ['目的地', '地点', counts.spots],
+    ['美食', '美食', counts.foods],
+    ['纪念品', '纪念品', counts.souvenirs],
+    ['活动', '活动', counts.events],
   ]
 
   return (
@@ -211,9 +211,9 @@ export default function FavoritesPage({
           <div className="max-w-3xl mb-10 reveal show">
             <div className="flex items-center gap-3 mb-5">
               <span className="section-num">— 09</span>
-              <span className="eyebrow">Personal Wishlist</span>
+              <span className="eyebrow">我的收藏</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-black serif leading-tight">我的收藏 · Your Journey</h1>
+            <h1 className="text-4xl md:text-6xl font-black serif leading-tight">我的收藏 · 旅行心愿单</h1>
             <div className="section-rule mt-6 mb-5" />
             <p className="text-ink/65 leading-8 text-[15px]">
               收藏保存在浏览器本地，同一浏览器随时可查阅；清除浏览器数据会同时清除收藏。你可以在主页继续点击心形按钮添加或取消地点、美食、纪念品与活动。

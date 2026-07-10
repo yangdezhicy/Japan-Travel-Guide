@@ -6,7 +6,7 @@ export default function Tips() {
           <div className="max-w-3xl mb-12 reveal show">
             <div className="flex items-center gap-3 mb-5">
               <span className="section-num">— 08</span>
-              <span className="eyebrow">Travel Tips · 2026</span>
+              <span className="eyebrow">旅行贴士 · 2026</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black serif leading-tight">行前必读 · 实用信息</h2>
             <div className="section-rule mt-6 mb-5" />
@@ -133,7 +133,7 @@ export default function Tips() {
           <div className="max-w-3xl mb-12 reveal show">
             <div className="flex items-center gap-3 mb-5">
               <span className="section-num">— 09</span>
-              <span className="eyebrow">For Foreign Travelers</span>
+              <span className="eyebrow">外国游客安心指南</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black serif leading-tight">外国游客关注 · 安心出行</h2>
             <div className="section-rule mt-6 mb-5" />
@@ -153,7 +153,7 @@ export default function Tips() {
                   iconClass: 'text-terracotta',
                   hoverClass: 'hover:border-terracotta/40',
                   icon: 'local_police',
-                  label: 'Police',
+                  label: '报警',
                   value: '110',
                   title: '警察',
                   text: '失窃、被盗、交通事故、纠纷报案',
@@ -162,7 +162,7 @@ export default function Tips() {
                   iconClass: 'text-terracotta',
                   hoverClass: 'hover:border-terracotta/40',
                   icon: 'local_fire_department',
-                  label: 'Fire · EMS',
+                  label: '火警急救',
                   value: '119',
                   title: '火警 · 急救',
                   text: '火灾、突发急病、受伤叫救护车',
@@ -171,7 +171,7 @@ export default function Tips() {
                   iconClass: 'text-pine',
                   hoverClass: 'hover:border-pine/40',
                   icon: 'support_agent',
-                  label: 'JNTO 24h',
+                  label: '旅游热线',
                   value: '050-3816-2787',
                   title: '游客咨询热线',
                   text: '日本旅游局 24 小时·中英韩日，旅游咨询与紧急协助',
@@ -180,7 +180,7 @@ export default function Tips() {
                   iconClass: 'text-pine',
                   hoverClass: 'hover:border-pine/40',
                   icon: 'flag',
-                  label: 'Consular',
+                  label: '领事保护',
                   value: '+86-10-12308',
                   title: '中国领事保护',
                   text: '外交部全球领事保护与服务应急热线，护照遗失、突发状况求助',
@@ -202,11 +202,11 @@ export default function Tips() {
           <div className="mb-14 reveal show">
             <div className="flex items-center gap-3 mb-6">
               <span className="material-symbols-outlined text-terracotta">qr_code_2</span>
-              <h3 className="serif font-bold text-xl">入境通关 · Visit Japan Web</h3>
+              <h3 className="serif font-bold text-xl">入境通关 · 电子申报</h3>
             </div>
             <div className="bg-card rounded-2xl border hairline p-7 md:p-9">
               <p className="text-[14.5px] text-ink/70 leading-8 mb-7">
-                日本政府官方免费系统 <strong>Visit Japan Web</strong>，出发前在线登记，把纸质入境卡与海关申报电子化，落地扫一个二维码即可快速通关，还可用于免税购物。
+                日本政府官方免费系统 <strong>入境手续系统</strong>，出发前在线登记，把纸质入境卡与海关申报电子化，落地扫一个二维码即可快速通关，还可用于免税购物。
               </p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {[
@@ -223,7 +223,7 @@ export default function Tips() {
                 ))}
               </div>
               <p className="text-[12.5px] text-ink/45 leading-6 mt-7 border-t hairline pt-4">
-                提示：持中国护照仍需提前办理日本签证；Visit Japan Web 只简化入境手续，不等于签证。免签国家/地区旅客可直接使用。
+                提示：持中国护照仍需提前办理日本签证；电子申报只简化入境手续，不等于签证。免签国家/地区旅客可直接使用。
               </p>
             </div>
           </div>
@@ -296,7 +296,7 @@ export default function Tips() {
                   <p className="font-bold">台风 · 地震与防灾</p>
                 </div>
                 <p className="text-[13.5px] text-ink/70 leading-7">
-                  台风季约 <strong>7–10 月</strong>，留意航班与列车停运。地震多发，摇晃时先护头躲到坚固桌下、远离玻璃与吊物。务必安装官方 <strong>Safety tips</strong> 防灾 App（支持简体中文）。
+                  台风季约 <strong>7–10 月</strong>，留意航班与列车停运。地震多发，摇晃时先护头躲到坚固桌下、远离玻璃与吊物。务必安装官方 <strong>防灾提示应用</strong>（支持简体中文）。
                 </p>
               </div>
             </div>

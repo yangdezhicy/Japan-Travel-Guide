@@ -62,12 +62,12 @@ export default function SouvenirSection({ onOpenSouvenir }: SouvenirProps) {
         <div className="max-w-3xl mb-12 reveal show">
           <div className="flex items-center gap-3 mb-5">
             <span className="section-num">— 09</span>
-            <span className="eyebrow">Souvenirs &amp; Shopping</span>
+            <span className="eyebrow">纪念品与购物</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black serif leading-tight">纪念品与购物清单</h2>
           <div className="section-rule mt-6 mb-5" />
           <p className="text-ink/65 leading-8 text-[15px]">
-            首页这里保留一个轻量版预览，真正完整的 Top 50 总榜、20 类分类逛法和购物商圈，请直接进入独立购物页查看。
+            首页这里保留一个轻量版预览，真正完整的总榜、分类逛法和购物商圈，请直接进入独立购物页查看。
           </p>
           <p className="text-[12.5px] text-ink/45 mt-3">
             参考汇率：约 <strong>100 日元 ≈ 4.18 元人民币</strong>（2026-07）。价格为公开参考区间，实际请以现场标价与退税规则为准。

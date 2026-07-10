@@ -1,14 +1,14 @@
 :root {
-  --paper: #FFF8F1;
-  --card: #FFFEFB;
-  --ink: #2D2420;
-  --muted: #8A7568;
-  --pine: #6F4E37;
-  --pine-dark: #3F2E26;
-  --terracotta: #E97854;
-  --terracotta-dark: #C95D3D;
-  --sand: #F3E4D3;
-  --hairline: rgba(111, 78, 55, 0.14);
+  --paper: #F7F4EF;
+  --card: #FFFFFF;
+  --ink: #24211F;
+  --muted: #7A716B;
+  --pine: #5E6A58;
+  --pine-dark: #343B31;
+  --terracotta: #C96F55;
+  --terracotta-dark: #A85B46;
+  --sand: #EEE5D8;
+  --hairline: rgba(36, 33, 31, 0.10);
 }
 
 * {
@@ -22,7 +22,7 @@ html {
 body {
   margin: 0;
   font-family: Inter, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
-  background: radial-gradient(circle at top left, rgba(233, 120, 84, 0.16), transparent 30%), radial-gradient(circle at 86% 12%, rgba(255, 214, 165, 0.24), transparent 28%), var(--paper);
+  background: var(--paper);
   color: var(--ink);
   min-width: 320px;
 }
@@ -63,8 +63,14 @@ h4,
 }
 
 .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  line-height: 1;
   vertical-align: middle;
+}
+
+body:not(.material-icons-ready) .material-symbols-outlined {
+  opacity: 0;
 }
 
 .reveal {
@@ -127,7 +133,7 @@ h4,
 }
 
 .glass {
-  background: rgba(244, 241, 234, 0.82);
+  background: rgba(247, 244, 239, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -177,8 +183,8 @@ h4,
 .spot-card:hover,
 .sv-card:hover,
 .event-card:hover {
-  box-shadow: 0 24px 48px -18px rgba(28, 27, 25, 0.18);
-  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -22px rgba(28, 27, 25, 0.18);
+  transform: translateY(-2px);
   border-color: rgba(35, 78, 67, 0.22);
 }
 

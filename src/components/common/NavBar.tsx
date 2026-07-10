@@ -54,7 +54,7 @@ export default function NavBar() {
   const spyIds = useMemo(() => (isHome ? HOME_SECTION_IDS : []), [isHome])
   const activeSection = useScrollSpy(spyIds)
 
-  const mobileIcon = open ? 'close' : 'menu'
+  const mobileIcon = open ? '×' : '☰'
 
   const navClassName = useMemo(() => {
     return `fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled || open ? 'shadow-md' : ''}`
@@ -88,7 +88,7 @@ export default function NavBar() {
             </span>
             <div className="leading-tight">
               <div className="serif font-bold text-[15px] tracking-wide text-ink">日本旅游全攻略</div>
-              <div className="text-[10px] tracking-[.28em] uppercase text-muted mt-0.5">Japan · 2026</div>
+              <div className="text-[10px] tracking-[.22em] text-muted mt-0.5">2026 最新整理</div>
             </div>
           </button>
 
@@ -120,7 +120,7 @@ export default function NavBar() {
               onClick={() => goSection('destinations')}
               className="hidden sm:inline-flex btn-primary text-[13px] font-semibold px-5 py-2.5 rounded-full items-center gap-1.5"
             >
-              <span className="material-symbols-outlined text-[18px]">explore</span>
+              <span className="text-[16px]">🧭</span>
               开始规划
             </button>
             <button
@@ -130,14 +130,14 @@ export default function NavBar() {
               className="lg:hidden w-10 h-10 grid place-items-center rounded-full text-ink hover:bg-black/5 transition"
               onClick={() => setOpen((value) => !value)}
             >
-              <span id="menu-icon" className="material-symbols-outlined">
+              <span id="menu-icon" className="text-xl leading-none">
                 {mobileIcon}
               </span>
             </button>
           </div>
         </div>
 
-        {/* Mobile Drawer */}
+        {/* 手机菜单 */}
         <div
           className={`lg:hidden fixed inset-0 bg-ink/45 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
           style={{ top: 64 }}
@@ -152,7 +152,7 @@ export default function NavBar() {
         >
           <div className="h-full overflow-y-auto px-5 py-5 scrollbar-hide">
             <div className="rounded-3xl bg-ink text-white p-5 mb-4">
-              <p className="text-[11px] tracking-[.22em] uppercase text-white/50">Quick Navigation</p>
+              <p className="text-[11px] tracking-[.16em] text-white/55">快速导航</p>
               <p className="serif text-xl font-black mt-1">选择你想看的攻略</p>
               <p className="text-white/62 text-[12.5px] leading-6 mt-2">景点、美食、工具、购物和收藏都可以快速跳转。</p>
             </div>
@@ -179,15 +179,15 @@ export default function NavBar() {
                 to="/shopping"
                 className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isShopping ? 'bg-ink text-white border-ink shadow-md' : 'bg-card text-ink/80 border-black/8'}`}
               >
-                <span className="flex items-center gap-2"><span className="material-symbols-outlined">shopping_bag</span>购物指南</span>
-                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                <span className="flex items-center gap-2"><span>🛍</span>购物指南</span>
+                <span className="text-[18px]">›</span>
               </Link>
               <Link
                 to="/favorites"
                 className={`min-h-[56px] rounded-2xl px-4 flex items-center justify-between border font-bold ${isFavorites ? 'bg-ink text-white border-ink shadow-md' : 'bg-card text-ink/80 border-black/8'}`}
               >
-                <span className="flex items-center gap-2"><span className="material-symbols-outlined">favorite</span>我的收藏</span>
-                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                <span className="flex items-center gap-2"><span>❤</span>我的收藏</span>
+                <span className="text-[18px]">›</span>
               </Link>
             </div>
           </div>

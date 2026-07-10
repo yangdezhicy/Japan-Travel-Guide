@@ -21,7 +21,7 @@ export default function Events({ activeRegionId, onChangeRegion, onOpenEvent }: 
         <div className="max-w-3xl mb-10 reveal show">
           <div className="flex items-center gap-3 mb-5">
             <span className="section-num">— 06</span>
-            <span className="eyebrow">Local Events</span>
+            <span className="eyebrow">当地活动</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black serif leading-tight">当地活动 · 节日与祭典</h2>
           <div className="section-rule mt-6 mb-5" />

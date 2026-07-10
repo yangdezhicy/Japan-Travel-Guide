@@ -1,27 +1,27 @@
 const cards = [
   {
-    icon: 'location_on',
+    icon: '📍',
     value: '7',
-    label: '大区域 / Regions',
+    label: '七大区域',
     text: '覆盖本州、北海道与冲绳，从雪国到南国。',
   },
   {
-    icon: 'temple_buddhist',
+    icon: '⛩',
     value: '40+',
-    label: '景点 / Sights',
+    label: '精选景点',
     text: '真实数据整理，持续更新。',
     accentPlus: true,
   },
   {
-    icon: 'confirmation_number',
+    icon: '¥',
     value: '￥',
-    label: '日元票价 / Ticket',
+    label: '日元票价',
     text: '门票 · 交通 · 时长一览。',
   },
   {
-    icon: 'smart_display',
+    icon: '🎬',
     value: '4K',
-    label: '影像 / Films',
+    label: '实拍影像',
     text: '国内可访问的实拍视频。',
   },
 ]
@@ -38,7 +38,7 @@ export default function IntroStats({ onOpenIntro }: IntroStatsProps) {
           <div className="lg:col-span-6 reveal show">
             <div className="flex items-center gap-3 mb-6">
               <span className="section-num">— 01</span>
-              <span className="eyebrow">Welcome to Japan</span>
+              <span className="eyebrow">日本旅行入门</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black serif leading-tight mb-8">
               一场跨越千年与未来的<span className="text-pine">旅行</span>
@@ -60,7 +60,7 @@ export default function IntroStats({ onOpenIntro }: IntroStatsProps) {
                 className="bg-card rounded-2xl p-7 border hairline hover:-translate-y-1 transition-transform cursor-pointer text-left"
               >
                 <div className="text-pine mb-3">
-                  <span className="material-symbols-outlined text-3xl">{card.icon}</span>
+                  <span className="text-3xl leading-none">{card.icon}</span>
                 </div>
                 <div className="text-5xl font-black serif text-ink">
                   {card.accentPlus ? (
@@ -71,7 +71,7 @@ export default function IntroStats({ onOpenIntro }: IntroStatsProps) {
                     card.value
                   )}
                 </div>
-                <p className="text-[13px] text-muted mt-2 tracking-wider uppercase">{card.label}</p>
+                <p className="text-[13px] text-muted mt-2 tracking-wide">{card.label}</p>
                 <p className="text-[13px] text-ink/60 mt-2 leading-6">{card.text}</p>
               </button>
             ))}
