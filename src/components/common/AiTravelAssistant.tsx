@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode, type TouchEvent, type WheelEvent } from 'react'
 import { AI_QUICK_QUESTIONS, TRAVEL_KNOWLEDGE_BASE } from '../../data/travelKnowledgeBase'
 import {
   buildKnowledgeContext,
@@ -149,62 +149,6 @@ export default function AiTravelAssistant() {
   }, [messages, typing, open])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('ai-assistant-open', open)
-    document.body.classList.toggle('ai-assistant-open', open)
-
-    if (!open) {
-      return () => {
-        document.documentElement.classList.remove('ai-assistant-open')
-        document.body.classList.remove('ai-assistant-open')
-      }
-    }
-
-    const getScrollBox = (target: EventTarget | null) => {
-      const node = target instanceof Element ? target : null
-      return node?.closest('.ai-assistant-scroll') as HTMLElement | null
-    }
-
-    const shouldLock = (target: EventTarget | null, deltaY: number) => {
-      const scrollBox = getScrollBox(target)
-      if (!scrollBox) return true
-
-      const canScroll = scrollBox.scrollHeight > scrollBox.clientHeight + 1
-      if (!canScroll) return true
-
-      const atTop = scrollBox.scrollTop <= 0
-      const atBottom = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - 1
-      return (deltaY < 0 && atTop) || (deltaY > 0 && atBottom)
-    }
-
-    const lockWheel = (event: WheelEvent) => {
-      if (shouldLock(event.target, event.deltaY)) event.preventDefault()
-    }
-
-    const recordTouch = (event: TouchEvent) => {
-      lastTouchYRef.current = event.touches[0]?.clientY ?? 0
-    }
-
-    const lockTouch = (event: TouchEvent) => {
-      const currentY = event.touches[0]?.clientY ?? lastTouchYRef.current
-      const deltaY = lastTouchYRef.current - currentY
-      lastTouchYRef.current = currentY
-      if (shouldLock(event.target, deltaY)) event.preventDefault()
-    }
-
-    document.addEventListener('wheel', lockWheel, { passive: false, capture: true })
-    document.addEventListener('touchstart', recordTouch, { passive: true, capture: true })
-    document.addEventListener('touchmove', lockTouch, { passive: false, capture: true })
-
-    return () => {
-      document.documentElement.classList.remove('ai-assistant-open')
-      document.body.classList.remove('ai-assistant-open')
-      document.removeEventListener('wheel', lockWheel, { capture: true })
-      document.removeEventListener('touchstart', recordTouch, { capture: true })
-      document.removeEventListener('touchmove', lockTouch, { capture: true })
-    }
-  }, [open])
-
-  useEffect(() => {
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
@@ -308,10 +252,44 @@ export default function AiTravelAssistant() {
     }
   }
 
+  const containAssistantScroll = (target: EventTarget | null, deltaY: number) => {
+    const node = target instanceof Element ? target : null
+    const scrollBox = node?.closest('.ai-assistant-scroll') as HTMLElement | null
+
+    if (!scrollBox) return true
+
+    const canScroll = scrollBox.scrollHeight > scrollBox.clientHeight + 1
+    if (!canScroll) return true
+
+    const atTop = scrollBox.scrollTop <= 0
+    const atBottom = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - 1
+    return (deltaY < 0 && atTop) || (deltaY > 0 && atBottom)
+  }
+
+  const handlePanelWheel = (event: WheelEvent<HTMLElement>) => {
+    if (containAssistantScroll(event.target, event.deltaY)) event.preventDefault()
+  }
+
+  const handlePanelTouchStart = (event: TouchEvent<HTMLElement>) => {
+    lastTouchYRef.current = event.touches[0]?.clientY ?? 0
+  }
+
+  const handlePanelTouchMove = (event: TouchEvent<HTMLElement>) => {
+    const currentY = event.touches[0]?.clientY ?? lastTouchYRef.current
+    const deltaY = lastTouchYRef.current - currentY
+    lastTouchYRef.current = currentY
+    if (containAssistantScroll(event.target, deltaY)) event.preventDefault()
+  }
+
   return (
     <div className={`fixed transition-all duration-500 ${open ? 'inset-0 md:inset-auto md:right-6 md:bottom-6' : 'right-4 bottom-4 md:right-6 md:bottom-6'}`} style={{ zIndex: 90 }}>
       {open ? (
-        <section className="ai-assistant-panel w-full h-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-[28px] bg-card shadow-2xl md:border md:hairline overflow-hidden flex flex-col">
+        <section
+          className="ai-assistant-panel w-full h-full md:h-[min(78vh,720px)] md:max-w-md md:rounded-[28px] bg-card shadow-2xl md:border md:hairline overflow-hidden flex flex-col"
+          onWheel={handlePanelWheel}
+          onTouchStart={handlePanelTouchStart}
+          onTouchMove={handlePanelTouchMove}
+        >
           <div className="text-white p-5 shrink-0 flex items-start justify-between gap-3" style={{ background: 'linear-gradient(135deg, #0F1D2E 0%, #1F3A5F 58%, #D84A38 100%)' }}>
             <div className="flex items-start gap-3">
               <span className="shrink-0 w-11 h-11 rounded-2xl bg-white/12 grid place-items-center border border-white/15">
