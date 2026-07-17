@@ -11,7 +11,7 @@ const quickLinks = [
   { id: 'foreign', label: '安心出行' },
 ]
 
-const icpRecordNumber = 'c176b8f570509f86ca7d7ac3191945e4'
+const icpRecordNumber = '浙ICP备2026054979号'
 const miitRecordUrl = 'https://beian.miit.gov.cn/'
 
 export default function Footer({ compact = false }) {
