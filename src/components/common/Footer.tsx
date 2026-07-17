@@ -11,6 +11,9 @@ const quickLinks = [
   { id: 'foreign', label: '安心出行' },
 ]
 
+const icpRecordNumber = 'c176b8f570509f86ca7d7ac3191945e4'
+const miitRecordUrl = 'https://beian.miit.gov.cn/'
+
 export default function Footer({ compact = false }) {
   return (
     <footer className="bg-ink text-sand/75">
@@ -76,9 +79,19 @@ export default function Footer({ compact = false }) {
             </>
           )}
         </div>
-        <div className="border-t border-sand/10 mt-12 pt-6 text-[12px] text-sand/50 flex flex-col md:flex-row justify-between gap-2">
-          <p>© 2026 日本旅游全攻略 · 内容仅供旅行参考，出行前请以官方最新信息为准。</p>
-          <p>图片与视频版权归原作者所有</p>
+        <div className="border-t border-sand/10 mt-12 pt-6 text-[12px] text-sand/50 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <p className="leading-5 md:max-w-[52%]">© 2026 日本旅游全攻略 · 内容仅供旅行参考，出行前请以官方最新信息为准。</p>
+          <div className="flex flex-col gap-1 leading-5 md:items-end">
+            <p>图片与视频版权归原作者所有</p>
+            <a
+              href={miitRecordUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-terracotta transition"
+            >
+              备案号：{icpRecordNumber}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
